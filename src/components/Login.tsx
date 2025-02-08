@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const createSession = async () => {
     const data = await singIn();
-    setUser(data);
+    setUser(data ?? {});
     if (data) {
       navigate("/dashboard");
     }
