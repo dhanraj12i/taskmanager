@@ -29,7 +29,7 @@ jobs:
 
       - name: Login to Firebase
         run: firebase login:ci
-         env:
+        env:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TASKBOARD_4D88D }}
           channelId: live
           projectId: taskboard-4d88d
