@@ -3,9 +3,9 @@ import SearchIcon from "@mui/icons-material/Search";
 
 const RoundedTextField = styled(TextField)(() => ({
   "& .MuiOutlinedInput-root": {
-    borderRadius: "25px", // Rounded corners
+    borderRadius: "25px",
     "& input": {
-      padding: "10px 14px 10px 0", // Add padding for the icon
+      padding: "10px 14px 10px 0",
     },
   },
 }));
