@@ -1,13 +1,13 @@
 import { Container, Typography, Button, Box } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
-import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
 import { singIn } from "../services/auth";
 import { useAuth } from "../states/context/useAuth";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+// import { useEffect } from "react";
+import TaskBoardLogo from "./shared/TaskBoardLogo";
 
 const Login = () => {
-  const { user, setUser } = useAuth();
+  const { setUser } = useAuth();
   const navigate = useNavigate();
   const createSession = async () => {
     const data = await singIn();
@@ -18,7 +18,7 @@ const Login = () => {
     console.log(data, "data after login");
   };
 
-  useEffect(() => {}, [user, navigate]);
+  // useEffect(() => {}, [user, navigate]);
 
   return (
     <Container
@@ -41,20 +41,7 @@ const Login = () => {
           justifyContent: "center",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-            gap: "10px",
-            color: "#7B1984",
-            fontWeight: "500",
-          }}
-        >
-          <AssignmentOutlinedIcon sx={{ alignSelf: "center" }} />
-          <Typography variant="h5" component="h1">
-            TaskBuddy
-          </Typography>
-        </Box>
+        <TaskBoardLogo />
         <Typography
           variant="subtitle2"
           gutterBottom

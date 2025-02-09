@@ -1,15 +1,18 @@
-import { Box, Button } from "@mui/material";
-import { removeSession } from "../services/auth";
+import { Box } from "@mui/material";
+import Header from "./Header";
+import FilterBar from "./filterbar/FilterBar";
 
 const Dashboard = () => {
-
-  const handleLogout = async () => {
-    await removeSession(); // Call the removeSession function
-  };
-
   return (
-    <Box>
-      <Button onClick={handleLogout}>sign out</Button>
+    <Box
+      sx={{ padding: "36px 32px" }}
+      display={"flex"}
+      flexDirection={"column"}
+    >
+      <Box>
+        <Header />
+        <FilterBar />
+      </Box>
     </Box>
   );
 };

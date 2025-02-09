@@ -2,13 +2,14 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { auth } from "../../config/firebase/firebase-Config";
 import { User } from "firebase/auth";
 import { AuthContext } from "./AuthContext";
+import { user } from "../../types/types";
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<object>({});
+  const [user, setUser] = useState<user | User>({});
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((firebaseUser: User | null) => {
