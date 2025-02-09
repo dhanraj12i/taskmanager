@@ -24,7 +24,7 @@ const Login = () => {
     <Container
       maxWidth={"xl"}
       sx={{
-        width: "100%",
+        width: "100vw",
         display: "flex",
         justifyContent: "flex-start",
         backgroundColor: "#FFF9F9",
