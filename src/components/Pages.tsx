@@ -8,12 +8,11 @@ const Pages = () => {
   return (
     <BrowserRouter>
       <Container
-        maxWidth="lg"
+        maxWidth="xl"
         sx={{
           m: 0,
           padding: "0 !important",
           boxSizing: "border-box",
-          width: { xl: 1560 },
         }}
       >
         <Box sx={{}}>
