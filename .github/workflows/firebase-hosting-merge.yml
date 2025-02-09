@@ -13,19 +13,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Install dependencies
+      - name: Checkout Repo
+        uses: actions/checkout@v2.3.2
+      - name: Install Dependencies
         run: npm install
-
-      - name: Build project
+      - name: Build
+        env:
+          CI: false
         run: npm run build
+      - uses: actions/checkout@v4
+      - run: npm install
+      - run: npm run build
 
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
