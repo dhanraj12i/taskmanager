@@ -15,16 +15,15 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2.3.2
+        
       - name: Install Dependencies
         run: npm install
+        
       - name: Build
         env:
           CI: false
         run: npm run build
-      - uses: actions/checkout@v4
-      - run: npm install
-      - run: npm run build
-
+      
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
