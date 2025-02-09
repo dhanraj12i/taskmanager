@@ -3,7 +3,6 @@ import Login from "./Login";
 import { Container, Box } from "@mui/material";
 import Dashboard from "./Dashboard";
 import ProtectedRoute from "../hooks/PotectedRoute";
-import { AuthProvider } from "../states/context/AuthContext";
 
 const Pages = () => {
   return (
@@ -18,15 +17,13 @@ const Pages = () => {
         }}
       >
         <Box sx={{}}>
-          <AuthProvider>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-              </Route>
-              <Route path="*" element={<Navigate to="/login" />} />
-            </Routes>
-          </AuthProvider>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/login" />} />
+          </Routes>
         </Box>
       </Container>
     </BrowserRouter>
