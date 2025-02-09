@@ -13,26 +13,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18 # Use your preferred Node.js version
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: |
-          npm ci
-
-      - name: Clean TypeScript Cache
-        run: |
-          npx tsc --build --clean
-
-      - name: Build the project
-        run: |
-          npm run build
+      - name: Checkout Repo
+        uses: actions/checkout@v2.3.2
+      - name: Install Dependencies
+        run: npm install
+      - name: Build
+        env:
+          CI: false
+        run: npm run build
+      - uses: actions/checkout@v4
+      - run: npm install
+      - run: npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
