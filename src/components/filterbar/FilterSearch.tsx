@@ -1,7 +1,7 @@
 import { Box, Button, InputAdornment, styled, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-const RoundedTextField = styled(TextField)(({ theme }) => ({
+const RoundedTextField = styled(TextField)(() => ({
   "& .MuiOutlinedInput-root": {
     borderRadius: "25px", // Rounded corners
     "& input": {

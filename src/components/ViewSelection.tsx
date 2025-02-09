@@ -3,7 +3,7 @@ import { useState } from "react";
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
 
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
   "& .MuiToggleButtonGroup-grouped": {
     border: "none", // Remove default border
     borderRadius: "0", // Remove border radius
