@@ -3,20 +3,30 @@ import { useState } from "react";
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
 
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
   "& .MuiToggleButtonGroup-grouped": {
-    border: "none", // Remove default border
-    borderRadius: "0", // Remove border radius
-    padding: "8px 16px", // Add padding
+    border: "none",
+    borderRadius: "0",
+    padding: "8px 16px",
     "&.Mui-selected": {
-      backgroundColor: "transparent", // Remove background color for selected state
-      borderBottom: `2px solid ${theme.palette.primary.main}`, // Add line below selected option
+      backgroundColor: "transparent",
+      borderBottom: `2px solid black`,
     },
     "&:not(:first-of-type)": {
-      marginLeft: "0", // Remove margin between buttons
+      marginLeft: "0",
+    },
+    "&.MuiButtonBase-root": {
+      padding: "0",
+      textTransform: "none",
     },
   },
 }));
+
+const styles = {
+  gap: {
+    gap: "6px",
+  },
+};
 
 const ViewSelection = () => {
   const [view, setView] = useState<"list" | "board">("list");
@@ -35,12 +45,13 @@ const ViewSelection = () => {
       exclusive
       onChange={handleViewChange}
       aria-label="view type"
+      sx={{ gap: "20px" }}
     >
-      <ToggleButton value="list" aria-label="list view">
+      <ToggleButton value="list" aria-label="list view" sx={styles.gap}>
         <ListOutlinedIcon />
         List
       </ToggleButton>
-      <ToggleButton value="board" aria-label="board view">
+      <ToggleButton value="board" aria-label="board view" sx={styles.gap}>
         <BarChartRoundedIcon />
         Board
       </ToggleButton>

@@ -7,7 +7,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 
 const Header = () => {
   const handleLogout = async () => {
-    await removeSession(); // Call the removeSession function
+    await removeSession();
   };
   const { user } = useAuth();
   return (
@@ -16,6 +16,7 @@ const Header = () => {
         sx={{
           display: "flex",
           justifyContent: "space-between",
+          mb: 0.5,
         }}
       >
         <TaskBoardLogo />

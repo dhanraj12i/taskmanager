@@ -20,14 +20,12 @@ const singIn = async () => {
 
 const removeSession = async () => {
   try {
-    await signOut(auth); // Sign out from Firebase
+    await signOut(auth);
 
-    // Clear session storage
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
 
-    // Optional: Redirect to login page or update state
-    window.location.href = "/login"; // Redirect to login page
+    window.location.href = "/login";
   } catch (error) {
     console.error("Error during sign-out:", error);
   }
