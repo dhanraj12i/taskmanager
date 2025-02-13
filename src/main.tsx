@@ -4,6 +4,7 @@ import App from "./App.tsx";
 import { AuthProvider } from "./states/context/AuthProvider.tsx";
 import { Provider as StoreWrapper } from "react-redux";
 import store from "./states/store/store.ts";
+import "./styles/global.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

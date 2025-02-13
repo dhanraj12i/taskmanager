@@ -1,46 +1,15 @@
-import { Box, Button, InputAdornment, styled, TextField } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-
-const RoundedTextField = styled(TextField)(() => ({
-  "& .MuiOutlinedInput-root": {
-    borderRadius: "25px",
-    "& input": {
-      padding: "10px 14px 10px 0",
-    },
-  },
-}));
+import { Box, Button } from "@mui/material";
+import { useState } from "react";
+import CreateTaskItem from "../modal-view/CreateTaskItem";
 
 const FilterSearch = () => {
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(!open);
   };
   return (
-    <Box
-      display={"flex"}
-      gap={2.5}
-      sx={{
-        flexDirection: {
-          sm: "column-reverse",
-          xs: "column-reverse",
-          md: "row",
-        },
-        alignItems: { sm: "flex-end", xs: "flex-end", md: "row" },
-      }}
-    >
-      <RoundedTextField
-        fullWidth
-        variant="outlined"
-        placeholder={"Search"}
-        value={""}
-        onChange={handleChange}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-      />
+    <Box display={"flex"} gap={2.5} sx={{ justifyContent: "flex-end" }}>
       <Box>
         <Button
           size="large"
@@ -52,13 +21,12 @@ const FilterSearch = () => {
             background: "#7B1984",
             color: "white",
           }}
-          onClick={() => {
-            alert("Add Task");
-          }}
+          onClick={handleClose}
         >
           ADD TASK
         </Button>
       </Box>
+      {open && <CreateTaskItem open={open} onClose={handleClose} />}
     </Box>
   );
 };

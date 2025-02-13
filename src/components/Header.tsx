@@ -12,13 +12,19 @@ const Header = () => {
   const { user } = useAuth();
 
   return (
-    <>
+    <Box
+      sx={{
+        alignSelf: "center",
+        display: { xs: "block" },
+        margin: "auto",
+        height: { sm: "54px", xs: "54px" },
+      }}
+    >
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
           mb: 0.5,
-          backgroundColor: { xs: "#FAEEFC", sm: "unset" },
         }}
       >
         <TaskBoardLogo />
@@ -74,7 +80,7 @@ const Header = () => {
           Logout
         </Button>
       </Box>
-    </>
+    </Box>
   );
 };
 
