@@ -1,5 +1,13 @@
-// import { createStore } from 'redux';
+import { configureStore } from "@reduxjs/toolkit";
+import globalSlice from "./slice";
 
-// const store = createStore(rootReducer);
+const store = configureStore({
+  reducer: {
+    globalState: globalSlice,
+  },
+});
 
-// export default store;
+export type RootState = ReturnType<typeof store.getState>;
+export type Dispatch = typeof store.dispatch;
+
+export default store;

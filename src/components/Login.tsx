@@ -3,7 +3,6 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { singIn } from "../services/auth";
 import { useAuth } from "../states/context/useAuth";
 import { useNavigate } from "react-router-dom";
-// import { useEffect } from "react";
 import TaskBoardLogo from "./shared/TaskBoardLogo";
 
 const Login = () => {
@@ -15,10 +14,7 @@ const Login = () => {
     if (data) {
       navigate("/dashboard");
     }
-    console.log(data, "data after login");
   };
-
-  // useEffect(() => {}, [user, navigate]);
 
   return (
     <Container

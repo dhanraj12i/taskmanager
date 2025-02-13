@@ -10,6 +10,7 @@ const Header = () => {
     await removeSession();
   };
   const { user } = useAuth();
+
   return (
     <>
       <Box
@@ -17,6 +18,7 @@ const Header = () => {
           display: "flex",
           justifyContent: "space-between",
           mb: 0.5,
+          backgroundColor: { xs: "#FAEEFC", sm: "unset" },
         }}
       >
         <TaskBoardLogo />
@@ -31,12 +33,15 @@ const Header = () => {
             alt="Profile-Picture"
             src={`${user.photoURL}`}
           />
-          <Typography> {`${user.displayName}`.split(" ")[0]}</Typography>
+          <Typography sx={{ display: { xs: "none", sm: "flex" } }}>
+            {" "}
+            {`${user.displayName}`.split(" ")[0]}
+          </Typography>
         </Box>
       </Box>
       <Box
         sx={{
-          display: "flex",
+          display: { sm: "none", xs: "none", md: "flex" },
           justifyContent: "space-between",
         }}
       >

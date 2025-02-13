@@ -15,7 +15,18 @@ const FilterSearch = () => {
     console.log(event.target.value);
   };
   return (
-    <Box display={"flex"} gap={2.5}>
+    <Box
+      display={"flex"}
+      gap={2.5}
+      sx={{
+        flexDirection: {
+          sm: "column-reverse",
+          xs: "column-reverse",
+          md: "row",
+        },
+        alignItems: { sm: "flex-end", xs: "flex-end", md: "row" },
+      }}
+    >
       <RoundedTextField
         fullWidth
         variant="outlined"

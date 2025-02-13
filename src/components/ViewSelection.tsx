@@ -1,57 +1,46 @@
 import { styled, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { useState } from "react";
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
+import { useDispatch, useSelector } from "react-redux";
+import { setViewType } from "../states/store/slice";
+import { getViewType } from "../states/store/selectors";
 
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)(() => ({
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)({
   "& .MuiToggleButtonGroup-grouped": {
     border: "none",
-    borderRadius: "0",
+    borderRadius: 0,
     padding: "8px 16px",
     "&.Mui-selected": {
       backgroundColor: "transparent",
-      borderBottom: `2px solid black`,
-    },
-    "&:not(:first-of-type)": {
-      marginLeft: "0",
-    },
-    "&.MuiButtonBase-root": {
-      padding: "0",
-      textTransform: "none",
+      borderBottom: "2px solid black",
     },
   },
-}));
-
-const styles = {
-  gap: {
-    gap: "6px",
-  },
-};
+});
 
 const ViewSelection = () => {
-  const [view, setView] = useState<"list" | "board">("list");
+  const dispatch = useDispatch();
+  const isListView = useSelector(getViewType);
+
   const handleViewChange = (
     _event: React.MouseEvent<HTMLElement>,
-    newView: "list" | "board"
+    newView: boolean
   ) => {
-    if (newView !== null) {
-      setView(newView);
-    }
+    if (newView !== null) dispatch(setViewType(newView));
   };
 
   return (
     <StyledToggleButtonGroup
-      value={view}
+      value={isListView}
       exclusive
       onChange={handleViewChange}
-      aria-label="view type"
-      sx={{ gap: "20px" }}
+      aria-label="View Type"
+      sx={{ gap: 2 }}
     >
-      <ToggleButton value="list" aria-label="list view" sx={styles.gap}>
+      <ToggleButton value={true} aria-label="List View">
         <ListOutlinedIcon />
         List
       </ToggleButton>
-      <ToggleButton value="board" aria-label="board view" sx={styles.gap}>
+      <ToggleButton value={false} aria-label="Board View" disabled={false}>
         <BarChartRoundedIcon />
         Board
       </ToggleButton>

@@ -37,10 +37,25 @@ const FilterOnLabel: React.FC<FiltersProps> = React.memo(
     );
 
     return (
-      <Box sx={{}} display={"flex"} gap={1}>
-        <Typography sx={{ alignSelf: "center", color: "#000000" }}>
-          Filter By:
-        </Typography>
+      <Box
+        sx={{
+          flexDirection: { xs: "column", sm: "column", md: "row" },
+          alignItems: { sm: "center", xs: "left" },
+        }}
+        display={"flex"}
+        gap={1}
+      >
+        <Box sx={{ textAlign: { sm: "left", md: "center" }, width: "100%" }}>
+          <Typography
+            sx={{
+              alignSelf: "center",
+              color: "#000000",
+              verticalAlign: "center",
+            }}
+          >
+            Filter By:
+          </Typography>
+        </Box>
         <Box display={"flex"} gap={2}>
           <CustomSelect
             label="Category"

@@ -6,9 +6,7 @@ const singIn = async () => {
     .then((result) => {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential?.accessToken as string;
-      console.log("token", token);
       sessionStorage.setItem("token", token);
-      console.log("result", result);
       return result?.user;
     })
     .catch((error) => {
