@@ -1,46 +1,46 @@
 import { styled, ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { useState } from "react";
 import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
+import { useDispatch, useSelector } from "react-redux";
+import { setViewType } from "../states/store/slice";
+import { getViewType } from "../states/store/selectors";
 
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)({
   "& .MuiToggleButtonGroup-grouped": {
-    border: "none", // Remove default border
-    borderRadius: "0", // Remove border radius
-    padding: "8px 16px", // Add padding
+    border: "none",
+    borderRadius: 0,
+    padding: "8px 16px",
     "&.Mui-selected": {
-      backgroundColor: "transparent", // Remove background color for selected state
-      borderBottom: `2px solid ${theme.palette.primary.main}`, // Add line below selected option
-    },
-    "&:not(:first-of-type)": {
-      marginLeft: "0", // Remove margin between buttons
+      backgroundColor: "transparent",
+      borderBottom: "2px solid black",
     },
   },
-}));
+});
 
 const ViewSelection = () => {
-  const [view, setView] = useState<"list" | "board">("list");
+  const dispatch = useDispatch();
+  const isListView = useSelector(getViewType);
+
   const handleViewChange = (
     _event: React.MouseEvent<HTMLElement>,
-    newView: "list" | "board"
+    newView: boolean
   ) => {
-    if (newView !== null) {
-      setView(newView);
-    }
+    if (newView !== null) dispatch(setViewType(newView));
   };
 
   return (
     <StyledToggleButtonGroup
-      value={view}
+      value={isListView}
       exclusive
       onChange={handleViewChange}
-      aria-label="view type"
+      aria-label="View Type"
+      sx={{ gap: 2 }}
     >
-      <ToggleButton value="list" aria-label="list view">
+      <ToggleButton value={true} aria-label="List View">
         <ListOutlinedIcon />
         List
       </ToggleButton>
-      <ToggleButton value="board" aria-label="board view">
+      <ToggleButton value={false} aria-label="Board View" disabled={false}>
         <BarChartRoundedIcon />
         Board
       </ToggleButton>

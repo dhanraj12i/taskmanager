@@ -6,9 +6,7 @@ const singIn = async () => {
     .then((result) => {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential?.accessToken as string;
-      console.log("token", token);
       sessionStorage.setItem("token", token);
-      console.log("result", result);
       return result?.user;
     })
     .catch((error) => {
@@ -20,14 +18,12 @@ const singIn = async () => {
 
 const removeSession = async () => {
   try {
-    await signOut(auth); // Sign out from Firebase
+    await signOut(auth);
 
-    // Clear session storage
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
 
-    // Optional: Redirect to login page or update state
-    window.location.href = "/login"; // Redirect to login page
+    window.location.href = "/login";
   } catch (error) {
     console.error("Error during sign-out:", error);
   }
