@@ -89,6 +89,12 @@ Follow these steps to set up Task Manager locally:
 
 ## Usage
 
+## Login Mobile View
+![alt text](https://github.com/dhanraj12i/taskmanager/blob/master/assets/MobileView_login.JPG?raw=true)
+
+## Dashboard Mobile View
+![alt text](https://github.com/dhanraj12i/taskmanager/blob/master/assets/mobileView_dashboard.JPG?raw=true)
+
 ### Adding a Task
 1. Click the **Add Task** button.
 2. Enter the task details (title, description, category, and due date).
