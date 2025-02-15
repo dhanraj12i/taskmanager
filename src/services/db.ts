@@ -70,10 +70,10 @@ const fetchTasks = async ({
         case "this-week": {
           const currentDate = new Date();
           const startOfWeek = new Date(currentDate);
-          startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); // Start of week (Sunday)
+          startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
 
           const endOfWeek = new Date(startOfWeek);
-          endOfWeek.setDate(startOfWeek.getDate() + 6); // End of week (Saturday)
+          endOfWeek.setDate(startOfWeek.getDate() + 6);
 
           startOfPeriod = Timestamp.fromDate(startOfWeek);
           endOfPeriod = Timestamp.fromDate(endOfWeek);
@@ -82,7 +82,7 @@ const fetchTasks = async ({
 
         case "this-month": {
           const now = new Date();
-          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // First day of the month
+          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
           const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Last day of the month
 
           startOfPeriod = Timestamp.fromDate(startOfMonth);
@@ -91,8 +91,8 @@ const fetchTasks = async ({
         }
 
         default: {
-          startOfPeriod = Timestamp.fromDate(new Date(0)); // Default to very old date
-          endOfPeriod = Timestamp.fromDate(new Date()); // Default to now
+          startOfPeriod = Timestamp.fromDate(new Date(0));
+          endOfPeriod = Timestamp.fromDate(new Date());
         }
       }
 
