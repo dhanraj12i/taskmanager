@@ -122,5 +122,18 @@ Follow these steps to set up Task Manager locally:
 - **Redux**: For efficient global state management.
 
 
+## Challeneges 
+1. Inconsistent Checkbox Selection in Task List
+  Challenge:
+        The checkbox selection was inconsistent, leading to incorrect selections and unselected tasks appearing selected.
+  Solution:
+        Used useEffect to update the selected tasks list when the state changed.
+        Implemented a controlled component approach to ensure correct state updates.
+ 2. Performance Optimization in Task Selection
+  Challenge:
+        Selecting multiple tasks caused unnecessary re-renders.
+  Solution:
+        Used useCallback to memoize selection handlers.
+        Optimized state updates by using a more efficient method to update the selected tasks array.
 
 
