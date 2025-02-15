@@ -1,10 +1,10 @@
 import { Box, Button } from "@mui/material";
 import { useState } from "react";
-import CreateTaskItem from "../modal-view/CreateTaskItem";
 import { createTask } from "../../services/db";
 import { TaskItems } from "../../types/types";
 import { useDispatch } from "react-redux";
 import { setRefetch } from "../../states/store/slice";
+import TaskItemModal from "../modal-view/CreateTaskItem";
 
 const FilterSearch = () => {
   const [open, setOpen] = useState(false);
@@ -40,7 +40,7 @@ const FilterSearch = () => {
           ADD TASK
         </Button>
       </Box>
-      {open && <CreateTaskItem open={open} onClose={handleClose} onSave={onCreated} />}
+      {open && <TaskItemModal open={open} onClose={handleClose} onSave={onCreated} />}
     </Box>
   );
 };

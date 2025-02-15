@@ -21,7 +21,7 @@ import { TaskItems } from "../../../../types/types";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { formatDate } from "../../../../utils/utils";
 import TaskActionMenu from "./RowAction";
-import { deleteTasks } from "../../../../services/db";
+import { deleteTasks, editTask } from "../../../../services/db";
 import { useDispatch } from "react-redux";
 import { setRefetch } from "../../../../states/store/slice";
 
@@ -39,7 +39,6 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox }
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -50,9 +49,18 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox }
       isDragging: monitor.isDragging(),
     }),
   });
-  const onEdit = () => {
 
-  }
+  const onEdit = async (payload: TaskItems) => {
+    if (payload.id) {
+      const { id, ...updatedData } = payload;
+      await editTask(id, updatedData);
+      dispatch(setRefetch(true));
+    } else {
+      console.warn('Task ID is missing, cannot edit task.');
+    }
+
+  };
+
   const onDelete = async (id: string) => {
     await deleteTasks([id]);
     dispatch(setRefetch(true))
@@ -122,7 +130,6 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox }
             {task.title}
           </Typography>
         </Box>
-
         <Box
           sx={{
             flexGrow: 1,

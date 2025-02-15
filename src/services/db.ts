@@ -3,6 +3,8 @@ import {
   doc,
   query,
   serverTimestamp,
+  Timestamp,
+  updateDoc,
   where,
   writeBatch,
 } from "firebase/firestore";
@@ -23,6 +25,23 @@ const createTask = async (task: TaskItems) => {
   }
 };
 
+const editTask = async (
+  taskId: string,
+  updatedData: Partial<TaskItems>
+): Promise<void> => {
+  try {
+    const taskRef = doc(db, "tasks", taskId);
+    await updateDoc(taskRef, {
+      ...updatedData,
+      updated: serverTimestamp(),
+    });
+    console.log(`Task ${taskId} updated successfully.`);
+  } catch (error) {
+    console.error(`Failed to update task ${taskId}:`, error);
+    throw error;
+  }
+};
+
 const fetchTasks = async ({
   category = "All",
   dueDateFilter = "All",
@@ -36,32 +55,45 @@ const fetchTasks = async ({
     }
 
     if (dueDateFilter !== "All") {
-      const now = new Date();
-      let startOfPeriod, endOfPeriod;
+      let startOfPeriod: Timestamp;
+      let endOfPeriod: Timestamp;
 
       switch (dueDateFilter) {
-        case "Today":
-          startOfPeriod = new Date();
-          startOfPeriod.setHours(0, 0, 0, 0);
-          endOfPeriod = new Date();
-          endOfPeriod.setHours(23, 59, 59, 999);
+        case "today": {
+          endOfPeriod = Timestamp.fromDate(new Date());
+          startOfPeriod = Timestamp.fromDate(
+            new Date(new Date().setDate(new Date().getDate() - 1))
+          );
           break;
-        case "This Week":
-          startOfPeriod = new Date(now.setDate(now.getDate() - now.getDay())); // Sunday
-          startOfPeriod.setHours(0, 0, 0, 0);
-          endOfPeriod = new Date(startOfPeriod);
-          endOfPeriod.setDate(startOfPeriod.getDate() + 6); // Saturday
-          endOfPeriod.setHours(23, 59, 59, 999);
+        }
+
+        case "this-week": {
+          const currentDate = new Date();
+          const startOfWeek = new Date(currentDate);
+          startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); // Start of week (Sunday)
+
+          const endOfWeek = new Date(startOfWeek);
+          endOfWeek.setDate(startOfWeek.getDate() + 6); // End of week (Saturday)
+
+          startOfPeriod = Timestamp.fromDate(startOfWeek);
+          endOfPeriod = Timestamp.fromDate(endOfWeek);
           break;
-        case "This Month":
-          startOfPeriod = new Date(now.getFullYear(), now.getMonth(), 1); // First day of the month
-          startOfPeriod.setHours(0, 0, 0, 0);
-          endOfPeriod = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Last day of the month
-          endOfPeriod.setHours(23, 59, 59, 999);
+        }
+
+        case "this-month": {
+          const now = new Date();
+          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // First day of the month
+          const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Last day of the month
+
+          startOfPeriod = Timestamp.fromDate(startOfMonth);
+          endOfPeriod = Timestamp.fromDate(endOfMonth);
           break;
-        default:
-          startOfPeriod = null;
-          endOfPeriod = null;
+        }
+
+        default: {
+          startOfPeriod = Timestamp.fromDate(new Date(0)); // Default to very old date
+          endOfPeriod = Timestamp.fromDate(new Date()); // Default to now
+        }
       }
 
       if (startOfPeriod && endOfPeriod) {
@@ -120,4 +152,4 @@ const updateTaskStatus = async (
     throw error;
   }
 };
-export { fetchTasks, createTask, deleteTasks, updateTaskStatus };
+export { fetchTasks, createTask, deleteTasks, updateTaskStatus, editTask };

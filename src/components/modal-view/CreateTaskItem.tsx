@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   ToggleButton,
@@ -12,30 +12,40 @@ import { TaskItems } from "../../types/types";
 import { getUUID } from "../../states/store/selectors";
 import { useSelector } from "react-redux";
 import { convertToFirebaseTimeStamp, validateForm } from "../../utils/utils";
-interface CreateTaskItemProps {
+
+interface TaskItemModalProps {
   open: boolean;
   onClose: () => void;
   onSave?: (task: TaskItems) => void;
+  taskData?: TaskItems; // 🔹 New prop to handle task editing
 }
 
-const CreateTaskItem: React.FC<CreateTaskItemProps> = ({
+const TaskItemModal: React.FC<TaskItemModalProps> = ({
   open,
   onClose,
   onSave,
+  taskData, // 🔹 Optional existing task for editing
 }) => {
   const [task, setTask] = useState<TaskItems>({
     UUID: useSelector(getUUID),
     category: "work",
     createdAt: convertToFirebaseTimeStamp(new Date()),
     updated: convertToFirebaseTimeStamp(new Date()),
-    duedate: new Date,
+    duedate: new Date(),
     desc: "",
     status: "todo",
     title: "",
     files: [],
   });
+
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  // 🔹 Populate form fields when editing an existing task
+  useEffect(() => {
+    if (taskData) {
+      setTask(taskData);
+    }
+  }, [taskData]);
 
   const handleChange = (field: keyof TaskItems, value: string | Date | string[]) => {
     if (field === "files" && Array.isArray(value)) {
@@ -44,29 +54,26 @@ const CreateTaskItem: React.FC<CreateTaskItemProps> = ({
 
     setTask((prev) => ({
       ...prev,
-      [field]: (typeof value === "string" || value instanceof Date) && field === "duedate"
-        ? convertToFirebaseTimeStamp(value)
-        : value,
+      [field]: field === "duedate" ? convertToFirebaseTimeStamp(value as string | Date) : value,
     }));
   };
 
-
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validationErrors = validateForm(task);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-    onSave?.(task);
+    await onSave?.(task);
+    onClose();
   };
 
   return (
     <CustomModal
       open={open}
       onClose={onClose}
-      title="Create Task"
-      primaryButtonText="Create"
+      title={taskData ? "Edit Task" : "Create Task"} // 🔹 Dynamic title
+      primaryButtonText={taskData ? "Update" : "Create"} // 🔹 Dynamic button text
       onPrimaryClick={handleSubmit}
     >
       <TextField
@@ -115,18 +122,15 @@ const CreateTaskItem: React.FC<CreateTaskItemProps> = ({
             Personal
           </ToggleButton>
         </ToggleButtonGroup>
-
         <TextField
           type="date"
           label="Due Date"
-          // InputLabelProps={{ shrink: true }}
           value={task.duedate}
           onChange={(e) => handleChange("duedate", e.target.value)}
           margin="dense"
           error={!!errors.duedate}
           helperText={errors.duedate}
         />
-
         <TextField
           select
           label="Task Status"
@@ -146,4 +150,4 @@ const CreateTaskItem: React.FC<CreateTaskItemProps> = ({
   );
 };
 
-export default CreateTaskItem;
+export default TaskItemModal;

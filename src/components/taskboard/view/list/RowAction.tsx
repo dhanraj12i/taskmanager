@@ -5,6 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TaskItems } from '../../../../types/types';
 import ConfirmDeleteModal from '../../actions/ConfirmDeleteTask';
+import TaskItemModal from '../../../modal-view/CreateTaskItem';
 
 interface TaskActionMenuProps {
     task: TaskItems;
@@ -24,13 +25,18 @@ const TaskActionMenu: React.FC<TaskActionMenuProps> = ({
     handleClose
 }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isEditOpen, setEditIsOpen] = useState(false);
 
     const handleEdit = () => {
         onEdit(task);
-        handleClose();
     };
+
     const toggleModal = () => {
         setIsOpen(!isOpen)
+    }
+
+    const toggleEditModal = () => {
+        setEditIsOpen(!isEditOpen)
     }
 
     const confirmDelete = () => {
@@ -48,14 +54,14 @@ const TaskActionMenu: React.FC<TaskActionMenuProps> = ({
                 elevation: 3,
                 sx: { borderRadius: 2, minWidth: 150 }
             }}>
-                <MenuItem onClick={handleEdit}>
+                <MenuItem onClick={toggleEditModal}>
                     <EditIcon fontSize="small" sx={{ mr: 1 }} /> Edit
                 </MenuItem>
                 <MenuItem onClick={toggleModal} sx={{ color: 'error.main' }}>
                     <DeleteIcon fontSize="small" sx={{ mr: 1 }} /> Delete
                 </MenuItem>
             </Menu>
-
+            {isEditOpen && <TaskItemModal open={isEditOpen} onClose={toggleEditModal} onSave={handleEdit} taskData={task} />}
             {isOpen && <ConfirmDeleteModal
                 open={isOpen}
                 onClose={closeDeleteModal}

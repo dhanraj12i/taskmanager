@@ -27,19 +27,17 @@ const FilterOnLabel: React.FC = React.memo(() => {
 
   // Local state to manage UI before dispatching to Redux
   const [localFilters, setLocalFilters] = useState({
-    category: filters.category || "All",
-    dueDate: filters.dueDate || "All",
+    category: filters.category,
+    dueDate: filters.dueDate,
     searchText: "",
   });
 
   const categoryOptions = useMemo(() => [
-    { value: "All", label: "All" },
     { value: "Work", label: "Work" },
     { value: "Personal", label: "Personal" },
   ], []);
 
   const dueDateOptions = useMemo(() => [
-    { value: "All", label: "All" },
     { value: "today", label: "Today" },
     { value: "this-week", label: "This Week" },
     { value: "this-month", label: "This Month" },
