@@ -1,9 +1,9 @@
-# TaskBuddy
+# Task Manager
 
-TaskBuddy is a modern task management application designed to help you organize your tasks efficiently. It offers two views: **List View** and **Board View**, each divided into three sections: **To Do**, **In Progress**, and **Completed**. With features like adding, editing, and deleting tasks, drag-and-drop functionality, and advanced filtering, TaskBuddy ensures a seamless task management experience.
+Task Manager is a modern task management application designed to help you organize your tasks efficiently. It offers two views: **List View** and **Board View**, each divided into three sections: **To Do**, **In Progress**, and **Completed**. With features like adding, editing, and deleting tasks, drag-and-drop functionality, and advanced filtering, Task Manager  ensures a seamless task management experience.
 
-![TaskBuddy Screenshot](screenshot.png)  
-*TaskBuddy in action.*
+![Task Manager Screenshot](screenshot.png)  
+*Task Manager in action.*
 
 ---
 
@@ -19,7 +19,9 @@ TaskBuddy is a modern task management application designed to help you organize 
 
 ## Features
 
-- **Two Views**: Switch between **List View** and **Board View** for better task organization.
+- **Responsive Design**: Task Manager adapts seamlessly to different screen sizes, providing an optimized experience for both desktop and mobile devices.
+  - **Desktop View**: Enjoy a spacious layout with two views: **List View** and **Board View**, each divided into three sections: **To Do**, **In Progress**, and **Completed**.
+  - **Mobile View**: A streamlined, single-column layout for easy task management on smaller screens.
 - **Task Management**:
   - Add, edit, and delete tasks.
   - Drag and drop tasks between sections (To Do, In Progress, Completed).
@@ -27,8 +29,7 @@ TaskBuddy is a modern task management application designed to help you organize 
   - Search tasks by name.
   - Filter tasks by date or category (Personal or Work).
 - **User Authentication**: Securely log in and manage your tasks.
-- **Responsive Design**: Built with **Material UI** for a clean and intuitive user interface.
-
+- **Cross-Platform Compatibility**: Built with **Material UI** for a consistent and intuitive user interface across devices.
 ---
 
 ## Technologies Used
@@ -46,7 +47,7 @@ TaskBuddy is a modern task management application designed to help you organize 
 
 ## Installation
 
-Follow these steps to set up TaskBuddy locally:
+Follow these steps to set up Task Manager locally:
 
 1. Clone the repository:
    ```bash
@@ -110,8 +111,6 @@ Follow these steps to set up TaskBuddy locally:
 - Use the **search bar** to find tasks by name.
 - Filter tasks by **date** or **category** using the filter options.
 
-## License
-This project is licensed under the **MIT License**. See the LICENSE file for details.
 
 ## Acknowledgements
 - **React-DnD**: For enabling drag-and-drop functionality.
