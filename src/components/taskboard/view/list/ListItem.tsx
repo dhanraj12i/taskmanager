@@ -29,10 +29,11 @@ type ListItemProps = {
   task: TaskItems;
   index: number;
   path: string;
+  selectedTasks: TaskItems[];
   handleCheckBox: (task: TaskItems) => void
 };
 
-const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox }) => {
+const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, selectedTasks }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch()
@@ -100,6 +101,7 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox }
                 height: 15,
                 width: 15,
               }}
+              checked={selectedTasks.some((t) => t.id === task.id)}
               onClick={() => handleCheckBox(task)}
             />
             <DragIndicatorIcon

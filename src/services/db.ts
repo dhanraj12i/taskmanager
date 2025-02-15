@@ -139,6 +139,7 @@ const updateTaskStatus = async (
   tasks.forEach((task) => {
     const taskRef = doc(db, "tasks", task.id!);
     batchOp.update(taskRef, {
+      ...task,
       status: newStatus,
       updated: serverTimestamp(),
     });

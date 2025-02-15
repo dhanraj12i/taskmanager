@@ -71,18 +71,17 @@ const ListView: React.FC<ListViewProps> = ({ listData, isBoardView = false }) =>
 
   useEffect(() => {
   }
-    , [isBoardView])
+    , [isBoardView, selectedTasks])
 
   const handleCheckBox = (task: TaskItems) => {
-    setSelectedTasks((prev) => {
-      const isSelected = prev.some((t) => t.id === task.id);
-      if (isSelected) {
-        return prev.filter((t) => t.id !== task.id);
-      } else {
-        return [...prev, task];
-      }
+    setSelectedTasks((prevSelected) => {
+      const isSelected = prevSelected.some((t) => t.id === task.id);
+      return isSelected
+        ? prevSelected.filter((t) => t.id !== task.id)
+        : [...prevSelected, task];
     });
   };
+
 
   return (
     <>
@@ -167,6 +166,7 @@ const ListView: React.FC<ListViewProps> = ({ listData, isBoardView = false }) =>
                             <ListItem
                               task={task}
                               index={taskIndex}
+                              selectedTasks={selectedTasks}
                               handleCheckBox={handleCheckBox}
                               path={`${rowIndex}-${taskIndex}`}
                             />
@@ -182,7 +182,7 @@ const ListView: React.FC<ListViewProps> = ({ listData, isBoardView = false }) =>
               </Box>
             ))}
           </Box>
-          {selectedTasks.length > 0 && <ActionOnSelect selectedTasks={selectedTasks} />}
+          {selectedTasks.length > 0 && <ActionOnSelect selectedTasks={selectedTasks} setSelectedTasks={setSelectedTasks} />}
         </DndProvider>
       )}
     </>

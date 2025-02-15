@@ -7,9 +7,10 @@ import { TaskItems } from '../../../types/types';
 
 interface ActionOnSelectProps {
     selectedTasks: TaskItems[];
+    setSelectedTasks: React.Dispatch<React.SetStateAction<TaskItems[]>>
 }
 
-const ActionOnSelect: React.FC<ActionOnSelectProps> = ({ selectedTasks }) => {
+const ActionOnSelect: React.FC<ActionOnSelectProps> = ({ selectedTasks, setSelectedTasks }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const dispatch = useDispatch();
 
@@ -23,6 +24,7 @@ const ActionOnSelect: React.FC<ActionOnSelectProps> = ({ selectedTasks }) => {
 
     const handleStatusUpdate = async (status: string) => {
         await updateTaskStatus(selectedTasks, status.toLowerCase() as "todo" | "inporgress" | "completed");
+        setSelectedTasks([])
         dispatch(setRefetch(true));
         handleCloseMenu();
     };
@@ -30,9 +32,11 @@ const ActionOnSelect: React.FC<ActionOnSelectProps> = ({ selectedTasks }) => {
     const handleDelete = async () => {
         const ids = selectedTasks.map((task: TaskItems) => task.id);
         if (ids.length > 0) {
+            alert('delete api before line')
             await deleteTasks(ids as string[]);
+            setSelectedTasks([])
             dispatch(setRefetch(true));
-        }
+        };
     };
 
     return (
@@ -53,13 +57,39 @@ const ActionOnSelect: React.FC<ActionOnSelectProps> = ({ selectedTasks }) => {
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
                         onClose={handleCloseMenu}
+                        anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "center",
+                        }}
+                        transformOrigin={{
+                            vertical: "bottom",
+                            horizontal: "center",
+                        }}
+                        sx={{
+                            mt: -1,
+                            "& .MuiPaper-root": {
+                                borderRadius: "8px",
+                                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.15)",
+                                backgroundColor: "#ffffff",
+                                minWidth: "120px",
+                            },
+                        }}
                     >
-                        {['TODO', 'INPROGRESS', 'COMPLETED'].map((status) => (
-                            <MenuItem key={status} onClick={() => handleStatusUpdate(status)}>
+                        {["TODO", "INPROGRESS", "COMPLETED"].map((status) => (
+                            <MenuItem
+                                key={status}
+                                onClick={() => handleStatusUpdate(status)}
+                                sx={{
+                                    "&:hover": {
+                                        backgroundColor: "#f0f0f0",
+                                    },
+                                }}
+                            >
                                 {status}
                             </MenuItem>
                         ))}
                     </Menu>
+
                     <Button
                         variant="contained"
                         color="error"
