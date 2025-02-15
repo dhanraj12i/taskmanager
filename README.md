@@ -85,7 +85,7 @@ Follow these steps to set up Task Manager locally:
 
 6. Open your browser and visit http://localhost:5173.
  
-
+7. Deployment_URL:- https://taskboard-4d88d.web.app/
 
 ## Usage
 
