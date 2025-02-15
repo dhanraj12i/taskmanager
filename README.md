@@ -12,7 +12,6 @@ Task Manager is a modern task management application designed to help you organi
 - [Technologies Used](#technologies-used)
 - [Installation](#installation)
 - [Usage](#usage)
-- [License](#license)
 - [Acknowledgements](#acknowledgements)
 
 ---
@@ -27,7 +26,7 @@ Task Manager is a modern task management application designed to help you organi
   - Drag and drop tasks between sections (To Do, In Progress, Completed).
 - **Advanced Filtering**:
   - Search tasks by name.
-  - Filter tasks by date or category (Personal or Work).
+  - Filter tasks by Due Date (All, Today, This Week, This Month ) or Category (Personal or Work).
 - **User Authentication**: Securely log in and manage your tasks.
 - **Cross-Platform Compatibility**: Built with **Material UI** for a consistent and intuitive user interface across devices.
 ---
