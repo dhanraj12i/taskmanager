@@ -32,7 +32,6 @@ const ActionOnSelect: React.FC<ActionOnSelectProps> = ({ selectedTasks, setSelec
     const handleDelete = async () => {
         const ids = selectedTasks.map((task: TaskItems) => task.id);
         if (ids.length > 0) {
-            alert('delete api before line')
             await deleteTasks(ids as string[]);
             setSelectedTasks([])
             dispatch(setRefetch(true));
