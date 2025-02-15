@@ -27,9 +27,7 @@ const TaskActionMenu: React.FC<TaskActionMenuProps> = ({
     const [isOpen, setIsOpen] = useState(false);
     const [isEditOpen, setEditIsOpen] = useState(false);
 
-    const handleEdit = () => {
-        onEdit(task);
-    };
+
 
     const toggleModal = () => {
         setIsOpen(!isOpen)
@@ -61,7 +59,7 @@ const TaskActionMenu: React.FC<TaskActionMenuProps> = ({
                     <DeleteIcon fontSize="small" sx={{ mr: 1 }} /> Delete
                 </MenuItem>
             </Menu>
-            {isEditOpen && <TaskItemModal open={isEditOpen} onClose={toggleEditModal} onSave={handleEdit} taskData={task} />}
+            {isEditOpen && <TaskItemModal open={isEditOpen} onClose={toggleEditModal} onSave={onEdit} taskData={{ ...task }} />}
             {isOpen && <ConfirmDeleteModal
                 open={isOpen}
                 onClose={closeDeleteModal}

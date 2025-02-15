@@ -35,7 +35,6 @@ const editTask = async (
       ...updatedData,
       updated: serverTimestamp(),
     });
-    console.log(`Task ${taskId} updated successfully.`);
   } catch (error) {
     console.error(`Failed to update task ${taskId}:`, error);
     throw error;

@@ -18,7 +18,6 @@ const FilterSearch = () => {
     createTask(payload).then((res) => {
       dispatch(setRefetch(true))
       handleClose();
-      console.log(res)
     })
   }
 
