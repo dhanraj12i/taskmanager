@@ -2,7 +2,7 @@
 
 Task Manager is a modern task management application designed to help you organize your tasks efficiently. It offers two views: **List View** and **Board View**, each divided into three sections: **To Do**, **In Progress**, and **Completed**. With features like adding, editing, and deleting tasks, drag-and-drop functionality, and advanced filtering, Task Manager  ensures a seamless task management experience.
 
-![Task Manager Screenshot](screenshot.png)  
+![Task Manager Screenshot](TaskManager1.png)  
 *Task Manager in action.*
 
 ---
@@ -94,6 +94,8 @@ Follow these steps to set up Task Manager locally:
 2. Enter the task details (title, description, category, and due date).
 3. Click **Save**.
 
+![Task Manager Screenshot](TM_ADDTask.png)  
+
 ### Editing a Task
 1. Click the **Edit** icon on the task card.
 2. Update the task details.
@@ -109,6 +111,8 @@ Follow these steps to set up Task Manager locally:
 ### Searching and Filtering
 - Use the **search bar** to find tasks by name.
 - Filter tasks by **date** or **category** using the filter options.
+
+![Task Manager Screenshot](TM_Filter.png)  
 
 
 ## Acknowledgements
