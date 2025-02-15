@@ -18,12 +18,6 @@ const ListPanalWrapper: React.FC<DropZoneProps> = ({
   const [, dropRef] = useDrop({
     accept: ItemTypes.TASK,
     drop: (item: { task: TaskItems; index: number; path: string }) => {
-      console.log(
-        "dropzone item.path, rowId, item.index",
-        item.path,
-        rowId,
-        item.index
-      );
       moveTask(item.path, rowId, item.index);
     },
   });

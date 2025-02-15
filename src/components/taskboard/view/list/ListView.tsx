@@ -7,26 +7,26 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import { RowItem, TaskBoardData, TaskItems } from "../../../../types/types";
 import ListPanalWrapper from "./ListPanalWrapper";
-import { Timestamp } from "firebase/firestore";
+// import { Timestamp } from "firebase/firestore";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ListItem from "./ListItem";
+import ActionOnSelect from '../../actions/ActionOnSelect';
 
 type ListViewProps = {
   listData: TaskBoardData;
+  isBoardView?: boolean
 };
 
-const ListView: React.FC<ListViewProps> = ({ listData }) => {
+const ListView: React.FC<ListViewProps> = ({ listData, isBoardView = false }) => {
   const [panalItems, setPanalItems] = useState<TaskBoardData>(listData);
+  const [selectedTasks, setSelectedTasks] = useState<TaskItems[]>([]);
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
   >(panalItems.reduce((acc, row) => ({ ...acc, [row.title]: true }), {}));
 
   useEffect(() => {
-    console.log("useffect panalItems ", listData);
     if (listData.length > 0) {
-      setPanalItems((prevData) =>
-        prevData.length === 0 ? [...listData] : prevData
-      );
+      setPanalItems(listData)
     }
   }, [listData]);
 
@@ -68,23 +68,20 @@ const ListView: React.FC<ListViewProps> = ({ listData }) => {
     setPanalItems(updatedData);
   };
 
-  const addTask = (rowId: string) => {
-    const newTaskTitle = prompt("Enter task title:", "New Task");
-    if (newTaskTitle) {
-      const newTask: TaskItems = {
-        id: `${rowId}-${Date.now()}`,
-        UUID: "",
-        category: "General",
-        createdAt: Timestamp.fromDate(new Date()),
-        updated: Timestamp.fromDate(new Date()),
-        duedate: Timestamp.fromDate(new Date()),
-        desc: "test",
-        status: rowId as "todo" | "inprogress" | "completed",
-        title: newTaskTitle,
-      };
 
-      console.log("Task to be posted:", newTask);
-    }
+  useEffect(() => {
+  }
+    , [isBoardView])
+
+  const handleCheckBox = (task: TaskItems) => {
+    setSelectedTasks((prev) => {
+      const isSelected = prev.some((t) => t.id === task.id);
+      if (isSelected) {
+        return prev.filter((t) => t.id !== task.id);
+      } else {
+        return [...prev, task];
+      }
+    });
   };
 
   return (
@@ -98,17 +95,17 @@ const ListView: React.FC<ListViewProps> = ({ listData }) => {
               boxShadow: "none",
               border: "none",
               display: "flex",
-              flexDirection: "column",
+              flexDirection: isBoardView ? 'row' : "column",
             }}
             gap={4}
           >
             {panalItems?.map((row, rowIndex) => (
               <Box
-                key={`${row.id}-${
-                  rowIndex +
-                    row.tasks[rowIndex]?.title +
-                    row.tasks[rowIndex]?.id || "test"
-                }`}
+                key={`${row.id}-${rowIndex +
+                  row.tasks[rowIndex]?.title +
+                  row.tasks[rowIndex]?.id || "test"
+                  }`}
+                sx={{ width: isBoardView ? '350px' : '100%' }}
                 id={"mainBox-card1"}
               >
                 <Accordion
@@ -138,9 +135,8 @@ const ListView: React.FC<ListViewProps> = ({ listData }) => {
                   <ListPanalWrapper
                     rowId={row.id}
                     moveTask={moveTask}
-                    key={`${row.id}-${
-                      rowIndex + row.tasks[rowIndex]?.title || "test"
-                    }`}
+                    key={`${row.id}-${rowIndex + row.tasks[rowIndex]?.title || "test"
+                      }`}
                   >
                     <AccordionDetails sx={{ padding: "0", minHeight: "200px" }}>
                       {row.tasks?.length === 0 ? (
@@ -158,7 +154,7 @@ const ListView: React.FC<ListViewProps> = ({ listData }) => {
                           {row.title === "ToDo" && (
                             <Button
                               variant="outlined"
-                              onClick={() => addTask(row.id)}
+                              // onClick={() => addTask(row.id)}
                               fullWidth
                             >
                               Add Task
@@ -171,7 +167,7 @@ const ListView: React.FC<ListViewProps> = ({ listData }) => {
                             <ListItem
                               task={task}
                               index={taskIndex}
-                              // moveTask={moveTask}
+                              handleCheckBox={handleCheckBox}
                               path={`${rowIndex}-${taskIndex}`}
                             />
                             {taskIndex !== row.tasks.length - 1 && <Divider />}
@@ -186,6 +182,7 @@ const ListView: React.FC<ListViewProps> = ({ listData }) => {
               </Box>
             ))}
           </Box>
+          {selectedTasks.length > 0 && <ActionOnSelect selectedTasks={selectedTasks} />}
         </DndProvider>
       )}
     </>

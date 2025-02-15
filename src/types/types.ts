@@ -14,6 +14,7 @@ export interface TaskItems {
   desc: string;
   status: "todo" | "inprogress" | "completed";
   title: string;
+  files?: string[];
 }
 
 export type RowItem = {

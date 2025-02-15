@@ -1,0 +1,5 @@
+{
+  "origin": ["https://taskboard-4d88d.web.app/"],
+  "method": ["GET", "POST", "PUT", "DELETE"],
+  "maxAgeSeconds": 3600
+}
