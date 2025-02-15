@@ -64,7 +64,7 @@ const TaskItemModal: React.FC<TaskItemModalProps> = ({
       setErrors(validationErrors);
       return;
     }
-    await onSave?.(task);
+    await onSave?.({ ...task });
     onClose();
   };
 

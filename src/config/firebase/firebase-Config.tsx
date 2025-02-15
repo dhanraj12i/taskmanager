@@ -12,7 +12,7 @@ const config = {
   appId: `${import.meta.env.VITE_FIREBASE_APP_ID}`,
   measurementId: `${import.meta.env.VITE_FIREBASE_M_ID}`,
 };
-console.log(config);
+
 const provider = new GoogleAuthProvider();
 const app = initializeApp(config);
 const db = getFirestore(app);
