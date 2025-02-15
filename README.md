@@ -1,207 +1,122 @@
-# React Vite + TypeScript + Firebase Project
+# TaskBuddy
 
-## Overview
-This project is a web application built with **React**, **Vite**, **TypeScript**, and **Firebase**. It includes features like user authentication, protected routes, and Firebase Firestore integration.
+TaskBuddy is a modern task management application designed to help you organize your tasks efficiently. It offers two views: **List View** and **Board View**, each divided into three sections: **To Do**, **In Progress**, and **Completed**. With features like adding, editing, and deleting tasks, drag-and-drop functionality, and advanced filtering, TaskBuddy ensures a seamless task management experience.
+
+![TaskBuddy Screenshot](screenshot.png)  
+*TaskBuddy in action.*
 
 ---
 
 ## Table of Contents
-1. [Technologies Used](#technologies-used)
-2. [Features](#features)
-3. [Setup Instructions](#setup-instructions)
-4. [Project Structure](#project-structure)
-5. [Firebase Integration](#firebase-integration)
-
-
----
-
-## Technologies Used
-- **React**: A JavaScript library for building user interfaces.
-- **Vite**: A fast build tool for modern web applications.
-- **TypeScript**: A typed superset of JavaScript for better developer experience.
-- **Firebase**: A backend-as-a-service platform for authentication, database, and hosting.
-  - Firebase Authentication
-  - Firebase Firestore (or Realtime Database)
-  - Firebase Hosting
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
 
 ---
 
 ## Features
-- **User Authentication**: Sign in with Google or email/password.
-- **Protected Routes**: Only authenticated users can access certain routes.
-- **Firestore Integration**: Store and retrieve data from Firebase Firestore.
-- **Responsive Design**: Works on both desktop and mobile devices.
+
+- **Two Views**: Switch between **List View** and **Board View** for better task organization.
+- **Task Management**:
+  - Add, edit, and delete tasks.
+  - Drag and drop tasks between sections (To Do, In Progress, Completed).
+- **Advanced Filtering**:
+  - Search tasks by name.
+  - Filter tasks by date or category (Personal or Work).
+- **User Authentication**: Securely log in and manage your tasks.
+- **Responsive Design**: Built with **Material UI** for a clean and intuitive user interface.
 
 ---
 
-## Setup Instructions
+## Technologies Used
 
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
-- Firebase account
+- **Frontend**:
+  - TypeScript
+  - React
+  - React-DnD (for drag-and-drop functionality)
+  - Material UI (for UI components)
+  - Redux (for global state management)
+- **Backend**:
+  - Firebase (for user authentication and data storage)
 
-### Installation
+---
+
+## Installation
+
+Follow these steps to set up TaskBuddy locally:
+
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo.git
-   cd your-repo
+   git clone https://github.com/your-username/taskbuddy.git
+2. Navigate to the project directory:
+    ```bash
+    cd taskbuddy
+3. Install dependencies:
+    ```bash
+    npm install
+4. Set up Firebase:
+   - Create a Firebase project at Firebase Console.
+   - Add your Firebase configuration in src/firebaseConfig.ts.
+     - Create a new file named firebaseConfig.ts in the src directory.
+     - Add the following code to the file and replace the placeholders with your Firebase project's configuration:
+    
+       ```typescript
+       const firebaseConfig = {
+       VITE_FIREBASE_API_KEY="Your_VITE_FIREBASE_API_KEY"
+       VITE_FIREBASE_AUTH_DOMAIN="Your_VITE_FIREBASE_AUTH_DOMAIN"
+       VITE_FIREBASE_PROJECT_ID="Your_FIREBASE_PROJECT_ID"
+       VITE_FIREBASE_STORAGE_ID="Your_FIREBASE_STORAGE_ID"
+       VITE_FIREBASE_MESSAGING_SENDER_ID="Your_FIREBASE_MESSAGING_SENDER_ID"
+       VITE_FIREBASE_APP_ID="Your_FIREBASE_APP_ID"
+       VITE_FIREBASE_M_ID="Your_FIREBASE_M_ID"
+       };
+
+       export default firebaseConfig;
+
+    - Note: The original firebaseConfig.ts file is not included in the repository due to sensitive information like API keys. You must create your own configuration file using your Firebase project details.
+
+5. Start the development server:
+   ```bash
+   npm start
+
+6. Open your browser and visit http://localhost:3000.
+
+
+## Usage
+
+### Adding a Task
+1. Click the **Add Task** button.
+2. Enter the task details (title, description, category, and due date).
+3. Click **Save**.
+
+### Editing a Task
+1. Click the **Edit** icon on the task card.
+2. Update the task details.
+3. Click **Save**.
+
+### Deleting a Task
+1. Click the **Delete** icon on the task card.
+2. Confirm the deletion.
+
+### Drag and Drop
+- Drag tasks between **To Do**, **In Progress**, and **Completed** sections in the **Board View**.
+
+### Searching and Filtering
+- Use the **search bar** to find tasks by name.
+- Filter tasks by **date** or **category** using the filter options.
+
+## License
+This project is licensed under the **MIT License**. See the LICENSE file for details.
+
+## Acknowledgements
+- **React-DnD**: For enabling drag-and-drop functionality.
+- **Material UI**: For providing a sleek and responsive UI design.
+- **Firebase**: For seamless user authentication and data storage.
+- **Redux**: For efficient global state management.
 
 
 
-src/
-├── components/       # Reusable UI components
-├── pages/            # Page components (e.g., Login, Dashboard)
-├── services/         # Firebase services and API calls
-├── contexts/         # React contexts (e.g., AuthContext)
-├── hooks/            # Custom React hooks
-├── assets/           # Static assets (images, fonts, etc.)
-├── App.tsx           # Main application component
-├── main.tsx          # Entry point
-├── vite-env.d.ts     # Vite environment type definitions
-├── firebase-config.ts # Firebase initialization
 
-Firebase Integration
-Firebase Setup
-Go to the Firebase Console.
-
-Create a new project and enable Authentication and Firestore.
-
-Add a web app to your Firebase project and copy the configuration keys.
-
-Authentication
-Users can sign in with Google or email/password.
-
-Authentication state is managed using React Context.
-
-Firestore
-Data is stored in Firestore and retrieved for display.
-
-Example Firestore structure:
-
-json
-Copy
-users/
-  userId/
-    name: "John Doe"
-    email: "john@example.com"
-
-
-
-Key Components
-AuthContext
-Manages the authentication state using React Context.
-
-Provides user and setUser to all components.
-
-Protected Routes
-Routes are protected using a ProtectedRoute component.
-
-Unauthenticated users are redirected to the login page.
-
-Firebase Services
-auth.ts: Handles Firebase authentication.
-
-firestore.ts: Handles Firestore operations.
-
-
-Deployment
-Build the Project
-Build the project for production:
-
-bash
-Copy
-npm run build
-Deploy to Firebase Hosting
-Install Firebase CLI:
-
-bash
-Copy
-npm install -g firebase-tools
-Log in to Firebase:
-
-bash
-Copy
-firebase login
-Initialize Firebase Hosting:
-
-bash
-Copy
-firebase init
-Deploy the project:
-
-bash
-Copy
-firebase deploy
-
-
-<ReusableModal
-  open={isOpen}
-  onClose={handleClose}
-  title="Example Modal"
-  primaryButtonText="Save"
-  secondaryButtonText="Cancel"
-  onPrimaryClick={handleSave}
->
-  <p>This is modal content!</p>
-</ReusableModal>
-
- Customization
-🔹 Customize Button Styles: Modify Button in ReusableModal.tsx
-🔹 Change Task Categories: Update TaskModal.tsx
-🔹 Add More Fields: Extend TaskItems and update form fields
-
-Dashboard
-
- Layout Component Documentation
-Purpose:
-This component serves as the main layout for displaying tasks in either ListView or BoardView, dynamically switching based on user selection and screen size (mobile or desktop). It fetches task data from Firebase, manages state using Redux, and optimizes rendering for performance.
-
-📂 File Location
-bash
-Copy
-Edit
-src/components/task/Layout.tsx
-🛠 Features
-✅ Fetches Tasks from Firebase
-✅ Filters & Searches Tasks Dynamically
-✅ Debounces Search Input for Performance
-✅ Switches Between List & Board View
-✅ Optimized for Mobile & Desktop
-✅ Uses Material UI for Styling
-✅ Efficient API Calls & State Management
-
- Task Data Initialization
-We define the board categories (ToDo, In Progress, Completed) as the initial structure:
-
-tsx
-Copy
-Edit
-const initialData: RowItem[] = useMemo(() => [
-  { id: "todo", title: "ToDo", tasks: [], bgColor: "#FAC3FF" },
-  { id: "inprogress", title: "In-Progress", tasks: [], bgColor: "#85D9F1" },
-  { id: "completed", title: "Completed", tasks: [], bgColor: "#CEFFCC" },
-], []);
-This ensures that tasks are categorized properly when data is fetched.
-
-useEffect(() => {
-  loadData();
-}, [filters, isRefetch]);
-
- Rendering ListView or BoardView
-Finally, based on isListViewActive, we render either ListView or BoardView:
-
-
-
--Rendering ListView or BoardView
-Finally, based on isListViewActive, we render either ListView or BoardView:
-
-return tableData.length > 0 && (
-  isListViewActive
-    ? <ListView listData={tableData} />
-    : <BoardView tableData={tableData} />
-);
-
-✔️ Integrate Drag-and-Drop for BoardView
-✔️ Add Task Editing & Deletion
-✔️ Improve Mobile Responsivenes
