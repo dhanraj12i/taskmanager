@@ -50,17 +50,17 @@ Follow these steps to set up TaskBuddy locally:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/taskbuddy.git
+   git clone https://github.com/dhanraj12i/taskmanager.git
 2. Navigate to the project directory:
     ```bash
-    cd taskbuddy
+    cd taskmanager
 3. Install dependencies:
     ```bash
     npm install
 4. Set up Firebase:
    - Create a Firebase project at Firebase Console.
-   - Add your Firebase configuration in src/firebaseConfig.ts.
-     - Create a new file named firebaseConfig.ts in the src directory.
+   - Add your Firebase configuration in src/config/firebase-Config.ts.
+     - Create a new file named firebase-Config.ts in the src directory.
      - Add the following code to the file and replace the placeholders with your Firebase project's configuration:
     
        ```typescript
@@ -76,13 +76,15 @@ Follow these steps to set up TaskBuddy locally:
 
        export default firebaseConfig;
 
-    - Note: The original firebaseConfig.ts file is not included in the repository due to sensitive information like API keys. You must create your own configuration file using your Firebase project details.
+    - Note: The original firebase-Config.ts file is not included in the repository due to sensitive information like API keys. You must create your own configuration file using your Firebase project details.
+    - Create collection name tasks in firestore database.
 
 5. Start the development server:
    ```bash
-   npm start
+   npm run dev
 
-6. Open your browser and visit http://localhost:3000.
+6. Open your browser and visit http://localhost:5173.
+ 
 
 
 ## Usage
