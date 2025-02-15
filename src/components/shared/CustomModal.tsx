@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
+import { Modal, Box, Typography, Button, IconButton, Divider } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 interface ModalProps {
@@ -24,7 +24,7 @@ const CustomModal: React.FC<ModalProps> = ({
   onSecondaryClick,
 }) => {
   return (
-    <Modal open={open} onClose={onClose} aria-labelledby="modal-title">
+    <Modal open={open} onClose={onClose} aria-labelledby="modal-title" sx={{ maxWidth: '600px' }}>
       <Box
         sx={{
           position: "absolute",
@@ -46,19 +46,31 @@ const CustomModal: React.FC<ModalProps> = ({
             <CloseIcon />
           </IconButton>
         </Box>
-
-        <Box mt={2}>{children}</Box>
-
+        <Divider />
+        <Box mt={2} sx={{ gap: 2, display: 'flex', flexDirection: 'column' }}>{children}</Box>
         <Box display="flex" justifyContent="flex-end" gap={2} mt={3}>
-          <Button variant="outlined" onClick={onSecondaryClick || onClose}>
+          <Button variant="outlined" onClick={onSecondaryClick || onClose} sx={{
+            width: "152px",
+            height: "42px",
+            borderRadius: "25px",
+            background: "#ffffff",
+            color: "black",
+          }}>
             {secondaryButtonText}
           </Button>
-          <Button variant="contained" color="primary" onClick={onPrimaryClick}>
+          <Button variant="contained" color="primary" sx={{
+            width: "152px",
+            height: "42px",
+            borderRadius: "25px",
+            background: "#7B1984",
+            color: "white",
+          }}
+            onClick={onPrimaryClick}>
             {primaryButtonText}
           </Button>
         </Box>
       </Box>
-    </Modal>
+    </Modal >
   );
 };
 

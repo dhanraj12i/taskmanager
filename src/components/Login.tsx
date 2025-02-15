@@ -4,14 +4,19 @@ import { singIn } from "../services/auth";
 import { useAuth } from "../states/context/useAuth";
 import { useNavigate } from "react-router-dom";
 import TaskBoardLogo from "./shared/TaskBoardLogo";
+import { useDispatch } from "react-redux";
+import { setUUID } from "../states/store/slice";
+import { User } from "firebase/auth";
 
 const Login = () => {
   const { setUser } = useAuth();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const createSession = async () => {
-    const data = await singIn();
-    setUser(data ?? {});
+    const data: User = await singIn() as User;
     if (data) {
+      dispatch(setUUID(data.uid))
+      setUser(data ?? {});
       navigate("/dashboard");
     }
   };

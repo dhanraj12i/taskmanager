@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEvent, useState } from "react";
 import {
   // ConnectableElement,
   // ConnectDragPreview,
@@ -20,15 +20,29 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { TaskItems } from "../../../../types/types";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { formatDate } from "../../../../utils/utils";
+import TaskActionMenu from "./RowAction";
+import { deleteTasks } from "../../../../services/db";
+import { useDispatch } from "react-redux";
+import { setRefetch } from "../../../../states/store/slice";
 
 type ListItemProps = {
   task: TaskItems;
   index: number;
   path: string;
+  handleCheckBox: (task: TaskItems) => void
 };
 
-const ListItem: React.FC<ListItemProps> = ({ task, index, path }) => {
-  console.log(task, index, path, " drag zone", task.title);
+const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox }) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const dispatch = useDispatch()
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const [{ isDragging }, dragRef] = useDrag({
     type: ItemTypes.TASK,
     item: { task, index, path },
@@ -36,6 +50,13 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path }) => {
       isDragging: monitor.isDragging(),
     }),
   });
+  const onEdit = () => {
+
+  }
+  const onDelete = async (id: string) => {
+    await deleteTasks([id]);
+    dispatch(setRefetch(true))
+  }
 
   return (
     <Box ref={dragRef as unknown as React.Ref<unknown>}>
@@ -71,6 +92,7 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path }) => {
                 height: 15,
                 width: 15,
               }}
+              onClick={() => handleCheckBox(task)}
             />
             <DragIndicatorIcon
               fontSize="small"
@@ -144,9 +166,17 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path }) => {
             {task.category}
           </Typography>
 
-          <IconButton size="small">
+          <IconButton size="small" onClick={handleClick}>
             <MoreHorizIcon />
           </IconButton>
+          {anchorEl && <TaskActionMenu
+            task={task}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            anchorEl={anchorEl}
+            open={open}
+            handleClose={handleClose}
+          />}
         </Box>
       </Card>
     </Box>

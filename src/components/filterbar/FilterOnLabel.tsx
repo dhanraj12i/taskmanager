@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import CustomSelect from "../shared/CustomSelect";
 import {
   Box,
@@ -8,14 +8,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-
-interface FiltersProps {
-  selectedCategory?: string;
-  selectedDueDate?: string;
-  onCategoryChange?: (category: string) => void;
-  onDueDateChange?: (dueDate: string) => void;
-  categories?: string[];
-}
+import { useDispatch, useSelector } from "react-redux";
+import { setFilters, setSearchText } from "../../states/store/slice";
+import { getFilters } from "../../states/store/selectors";
 
 const RoundedTextField = styled(TextField)(() => ({
   "& .MuiOutlinedInput-root": {
@@ -26,102 +21,98 @@ const RoundedTextField = styled(TextField)(() => ({
   },
 }));
 
-const FilterOnLabel: React.FC<FiltersProps> = React.memo(
-  ({
-    // selectedCategory,
-    // selectedDueDate,
-    // onCategoryChange,
-    // onDueDateChange,
-    categories = ["Work", "Personal"],
-  }) => {
-    const categoryOptions = useMemo(
-      () =>
-        categories?.map((category) => ({
-          value: category,
-          label: category,
-        })),
-      [categories]
-    );
+const FilterOnLabel: React.FC = React.memo(() => {
+  const dispatch = useDispatch();
+  const filters = useSelector(getFilters);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      console.log(event.target.value);
-    };
+  // Local state to manage UI before dispatching to Redux
+  const [localFilters, setLocalFilters] = useState({
+    category: filters.category || "All",
+    dueDate: filters.dueDate || "All",
+    searchText: "",
+  });
 
-    const dueDateOptions = useMemo(
-      () => [
-        { value: "today", label: "Today" },
-        { value: "this-week", label: "This Week" },
-        { value: "this-month", label: "This Month" },
-      ],
-      []
-    );
+  const categoryOptions = useMemo(() => [
+    { value: "All", label: "All" },
+    { value: "Work", label: "Work" },
+    { value: "Personal", label: "Personal" },
+  ], []);
 
-    return (
+  const dueDateOptions = useMemo(() => [
+    { value: "All", label: "All" },
+    { value: "today", label: "Today" },
+    { value: "this-week", label: "This Week" },
+    { value: "this-month", label: "This Month" },
+  ], []);
+
+  const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setLocalFilters((prev) => ({ ...prev, searchText: value }));
+    dispatch(setSearchText(value));
+  }, [dispatch]);
+
+  const handleFilterChange = useCallback((key: "category" | "dueDate", value: string) => {
+    setLocalFilters((prev) => ({ ...prev, [key]: value }));
+    dispatch(setFilters({ [key]: value }));
+  }, [dispatch]);
+
+  return (
+    <Box
+      id="filter and label"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: { xs: "flex-start", md: "space-between" },
+        flexDirection: { xs: "column", md: "row" },
+        gap: { xs: 2, md: 4 },
+        width: "100%",
+      }}
+    >
       <Box
-        id="filter and label"
         sx={{
           display: "flex",
-          alignItems: "center",
-          justifyContent: { xs: "flex-start", md: "space-between" },
-          flexDirection: { xs: "column", md: "row" },
-          gap: { xs: 2, md: 4 },
-          width: "100%",
+          alignItems: { md: "center" },
+          justifyContent: { xs: "flex-start" },
+          flexDirection: { xs: "column", sm: "row" },
+          width: { xs: "100%" },
         }}
+        gap={1}
       >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: { md: "center" },
-            justifyContent: { xs: "flex-start" },
-            flexDirection: { xs: "column", sm: "row" },
-            width: { xs: "100%" },
-          }}
-          gap={1}
-        >
-          <Box>
-            <Typography
-              sx={{
-                // alignSelf: "center",
-                color: "#000000",
-                // verticalAlign: "center",
-              }}
-            >
-              Filter By:
-            </Typography>
-          </Box>
-          <Box display={"flex"} sx={{ gap: { xs: 2 } }}>
-            <CustomSelect
-              label="Category"
-              value={""}
-              onChange={() => {}}
-              options={categoryOptions}
-            />
-            <CustomSelect
-              label="Due Date"
-              value={""}
-              onChange={() => {}}
-              options={dueDateOptions}
-            />
-          </Box>
+        <Box>
+          <Typography sx={{ color: "#000000" }}>Filter By:</Typography>
         </Box>
-
-        <RoundedTextField
-          sx={{ width: { xs: "100%", md: "unset" } }}
-          variant="outlined"
-          placeholder={"Search"}
-          value={""}
-          onChange={handleChange}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
+        <Box display={"flex"} sx={{ gap: { xs: 2 } }}>
+          <CustomSelect
+            label="Category"
+            value={localFilters.category}
+            onChange={(value) => handleFilterChange("category", value)}
+            options={categoryOptions}
+          />
+          <CustomSelect
+            label="Due Date"
+            value={localFilters.dueDate}
+            onChange={(value) => handleFilterChange("dueDate", value)}
+            options={dueDateOptions}
+          />
+        </Box>
       </Box>
-    );
-  }
-);
+
+      <RoundedTextField
+        sx={{ width: { xs: "100%", md: "unset" } }}
+        variant="outlined"
+        placeholder="Search"
+        value={localFilters.searchText}
+        onChange={handleSearchChange}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
+    </Box>
+  );
+});
 
 export default FilterOnLabel;

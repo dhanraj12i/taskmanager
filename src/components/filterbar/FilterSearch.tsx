@@ -1,13 +1,27 @@
 import { Box, Button } from "@mui/material";
 import { useState } from "react";
 import CreateTaskItem from "../modal-view/CreateTaskItem";
+import { createTask } from "../../services/db";
+import { TaskItems } from "../../types/types";
+import { useDispatch } from "react-redux";
+import { setRefetch } from "../../states/store/slice";
 
 const FilterSearch = () => {
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const handleClose = () => {
     setOpen(!open);
   };
+
+  const onCreated = (payload: TaskItems) => {
+    createTask(payload).then((res) => {
+      dispatch(setRefetch(true))
+      handleClose();
+      console.log(res)
+    })
+  }
+
   return (
     <Box display={"flex"} gap={2.5} sx={{ justifyContent: "flex-end" }}>
       <Box>
@@ -26,7 +40,7 @@ const FilterSearch = () => {
           ADD TASK
         </Button>
       </Box>
-      {open && <CreateTaskItem open={open} onClose={handleClose} />}
+      {open && <CreateTaskItem open={open} onClose={handleClose} onSave={onCreated} />}
     </Box>
   );
 };
