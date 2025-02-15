@@ -75,6 +75,7 @@ const TaskItemModal: React.FC<TaskItemModalProps> = ({
       title={taskData ? "Edit Task" : "Create Task"} // 🔹 Dynamic title
       primaryButtonText={taskData ? "Update" : "Create"} // 🔹 Dynamic button text
       onPrimaryClick={handleSubmit}
+      width={'600px'}
     >
       <TextField
         fullWidth
@@ -102,7 +103,7 @@ const TaskItemModal: React.FC<TaskItemModalProps> = ({
         error={!!errors.desc}
         helperText={errors.desc}
       />
-      <Box sx={{ display: "flex", gap: "22px" }}>
+      <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, gap: "22px", mb: 2 }}>
         <ToggleButtonGroup
           value={task.category}
           exclusive
@@ -122,28 +123,39 @@ const TaskItemModal: React.FC<TaskItemModalProps> = ({
             Personal
           </ToggleButton>
         </ToggleButtonGroup>
-        <TextField
-          type="date"
-          label="Due Date"
-          value={task.duedate}
-          onChange={(e) => handleChange("duedate", e.target.value)}
-          margin="dense"
-          error={!!errors.duedate}
-          helperText={errors.duedate}
-        />
-        <TextField
-          select
-          label="Task Status"
-          value={task.status}
-          onChange={(e) => handleChange("status", e.target.value)}
-          margin="dense"
-          error={!!errors.status}
-          helperText={errors.status}
-        >
-          <MenuItem value="todo">To Do</MenuItem>
-          <MenuItem value="inprogress">In Progress</MenuItem>
-          <MenuItem value="completed">Completed</MenuItem>
-        </TextField>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          gap: '18px',
+          '&.MuiInputBase-root': {
+            height: '35px !important'
+          }
+        }}>
+          <TextField
+            type="date"
+            label="Due Date"
+            value={task.duedate}
+            sx={{ height: '35px' }}
+            onChange={(e) => handleChange("duedate", e.target.value)}
+            margin="dense"
+            error={!!errors.duedate}
+            helperText={errors.duedate}
+          />
+          <TextField
+            select
+            label="Task Status"
+            value={task.status}
+            onChange={(e) => handleChange("status", e.target.value)}
+            margin="dense"
+            sx={{ height: '35px' }}
+            error={!!errors.status}
+            helperText={errors.status}
+          >
+            <MenuItem value="todo">To Do</MenuItem>
+            <MenuItem value="inprogress">In Progress</MenuItem>
+            <MenuItem value="completed">Completed</MenuItem>
+          </TextField>
+        </Box>
       </Box>
       <FileUpload setFile={handleChange} />
     </CustomModal>

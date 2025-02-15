@@ -9,12 +9,14 @@ interface ModalProps {
   children: React.ReactNode;
   primaryButtonText?: string;
   secondaryButtonText?: string;
+  width?: string;
   onPrimaryClick?: () => void;
   onSecondaryClick?: () => void;
 }
 
 const CustomModal: React.FC<ModalProps> = ({
   open,
+  width,
   onClose,
   title,
   children,
@@ -31,7 +33,7 @@ const CustomModal: React.FC<ModalProps> = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: { xs: "90%", sm: 400 },
+          width: { xs: "60%", sm: width ?? "400px" },
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 3,

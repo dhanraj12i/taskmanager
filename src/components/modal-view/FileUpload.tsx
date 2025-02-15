@@ -72,6 +72,9 @@ const FileUpload: React.FC<fileUploadProps> = ({ setFile }) => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     multiple: true,
+    onDragEnter: () => { },
+    onDragLeave: () => { },
+    onDragOver: () => { }
   });
   /* eslint-enable @typescript-eslint/no-unused-vars */
   return (
