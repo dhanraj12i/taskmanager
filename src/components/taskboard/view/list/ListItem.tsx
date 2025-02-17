@@ -29,11 +29,12 @@ type ListItemProps = {
   task: TaskItems;
   index: number;
   path: string;
+  isBoardView: boolean;
   selectedTasks: TaskItems[];
   handleCheckBox: (task: TaskItems) => void
 };
 
-const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, selectedTasks }) => {
+const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, selectedTasks, isBoardView }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch()
@@ -84,14 +85,8 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
           flexWrap: "wrap",
         }}
       >
-        <Box
-          sx={{ display: "flex", alignItems: "center", flexShrink: 0, gap: 2 }}
-        >
-          <Stack
-            direction="row"
-            alignItems="center"
-            sx={{ flexGrow: 1, gap: 1 }}
-          >
+        <Box sx={{ display: "flex", alignItems: "center", flexShrink: 0, gap: 2 }}>
+          {!isBoardView && <Stack direction="row" alignItems="center" sx={{ flexGrow: 1, gap: 1 }}>
             <Checkbox
               sx={{
                 [`&.Mui-checked`]: {
@@ -111,13 +106,8 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
                 display: { xs: "none", sm: "flex" },
               }}
             />
-            <CheckCircleRoundedIcon
-              sx={{
-                fontSize: 20,
-                color: "gray",
-              }}
-            />
-          </Stack>
+            <CheckCircleRoundedIcon sx={{ fontSize: 20, color: "gray" }} />
+          </Stack>}
 
           <Typography
             variant="subtitle1"
@@ -127,6 +117,7 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
               flexShrink: 0,
+              ...(isBoardView && { textWrap: isBoardView && 'wrap' })
             }}
           >
             {task.title}
@@ -140,19 +131,20 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
             alignItems: "center",
             textAlign: "center",
             gap: 1,
-            paddingX: { xs: 1, sm: 2 },
-            display: { xs: "none", sm: "flex" },
+            flexDirection: isBoardView ? "row-reverse" : 'row',
+            paddingX: isBoardView ? 0 : { xs: 1, sm: 2 },
+            display: isBoardView ? "flex" : { xs: "none", sm: "flex" },
           }}
         >
           <Typography
             variant="body2"
             color="textSecondary"
-            sx={{ width: "150px" }}
+            sx={{ width: "150px", textAlign: isBoardView ? 'right' : 'left' }}
           >
             {`${formatDate(task.duedate as Date)}`}
           </Typography>
 
-          <Chip
+          {!isBoardView && <Chip
             label={task.status.toLocaleUpperCase()}
             variant="filled"
             sx={{
@@ -161,7 +153,7 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
               fontSize: { xs: "10px", sm: "12px" },
               borderRadius: "4px",
             }}
-          />
+          />}
 
           <Typography
             variant="body2"
@@ -175,19 +167,22 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
             {task.category}
           </Typography>
 
-          <IconButton size="small" onClick={handleClick}>
+          {!isBoardView && <IconButton size="small" onClick={handleClick}>
             <MoreHorizIcon />
-          </IconButton>
-          {anchorEl && <TaskActionMenu
-            task={task}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            anchorEl={anchorEl}
-            open={open}
-            handleClose={handleClose}
-          />}
+          </IconButton>}
+          {anchorEl && (
+            <TaskActionMenu
+              task={task}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              anchorEl={anchorEl}
+              open={open}
+              handleClose={handleClose}
+            />
+          )}
         </Box>
       </Card>
+
     </Box>
   );
 };

@@ -165,6 +165,7 @@ const ListView: React.FC<ListViewProps> = ({ listData, isBoardView = false }) =>
                           <React.Fragment key={`${rowIndex}-${taskIndex}`}>
                             <ListItem
                               task={task}
+                              isBoardView={isBoardView}
                               index={taskIndex}
                               selectedTasks={selectedTasks}
                               handleCheckBox={handleCheckBox}
