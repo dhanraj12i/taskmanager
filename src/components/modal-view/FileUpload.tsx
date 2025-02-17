@@ -4,11 +4,12 @@ import { Box, Typography, Link, Grid, Card, CardMedia, IconButton } from "@mui/m
 import { TaskItems } from "../../types/types";
 import { Delete } from "@mui/icons-material";
 
-type fileUploadProps = {
+type FileUploadProps = {
   setFile: (field: keyof TaskItems, value: string | Date | string[]) => void;
+  task: TaskItems;
 };
 
-const FileUpload: React.FC<fileUploadProps> = ({ setFile }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ setFile, task }) => {
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [fileBlobs, setFileBlobs] = useState<string[]>([]);
 
@@ -23,40 +24,63 @@ const FileUpload: React.FC<fileUploadProps> = ({ setFile }) => {
     });
   };
 
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  const onDrop = async (acceptedFiles: File[], _fileRejections: FileRejection[], _event: DropEvent) => {
+  const base64ToBlob = (base64Data: string): Blob => {
+    const parts = base64Data.split(",");
+    const mimeMatch = parts[0].match(/:(.*?);/);
+    const mime = mimeMatch ? mimeMatch[1] : "";
+    const binary = atob(parts[1]);
+    const length = binary.length;
+    const u8arr = new Uint8Array(length);
+    for (let i = 0; i < length; i++) {
+      u8arr[i] = binary.charCodeAt(i);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
+
+  useEffect(() => {
+    if (task.files?.length) {
+      const blobs = task.files.map((fileStr: string) => base64ToBlob(fileStr));
+      const urls = blobs.map((blob) => URL.createObjectURL(blob));
+      setPreviewUrls(urls);
+      setFileBlobs([...task.files]);
+    }
+  }, []); // Run only on mount
+
+  const onDrop = async (
+    acceptedFiles: File[],
+    _fileRejections: FileRejection[],
+    _event: DropEvent
+  ) => {
     const base64Files: string[] = [];
     const imagePreviews: string[] = [];
 
     const processFiles = async () => {
       for (const file of acceptedFiles) {
         const fileBlob = new Blob([file], { type: file.type });
-
         try {
           const base64String = await convertBlobToBase64(fileBlob);
           base64Files.push(base64String);
         } catch (error) {
           console.error("Error converting blob to base64:", error);
         }
-
         if (file.type.startsWith("image/")) {
           const previewUrl = URL.createObjectURL(file);
           imagePreviews.push(previewUrl);
         }
       }
-
       setPreviewUrls((prevUrls) => [...prevUrls, ...imagePreviews]);
       setFileBlobs((prevBase64) => [...prevBase64, ...base64Files]);
     };
 
     await processFiles();
   };
-  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   useEffect(() => {
-    if (fileBlobs.length > 0) setFile("files", [...fileBlobs]);
-
-  }, [fileBlobs])
+    if (fileBlobs.length > 0) {
+      setFile("files", [...fileBlobs]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fileBlobs]);
 
   const removeImage = (index: number) => {
     const newPreviewUrls = [...previewUrls];
@@ -65,18 +89,17 @@ const FileUpload: React.FC<fileUploadProps> = ({ setFile }) => {
     newFileBlobs.splice(index, 1);
     setPreviewUrls(newPreviewUrls);
     setFileBlobs(newFileBlobs);
-    setFile("files", newFileBlobs); // Update the file state as well
+    setFile("files", newFileBlobs);
   };
 
-  /* eslint-disable @typescript-eslint/no-unused-vars */
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     multiple: true,
     onDragEnter: () => { },
     onDragLeave: () => { },
-    onDragOver: () => { }
+    onDragOver: () => { },
   });
-  /* eslint-enable @typescript-eslint/no-unused-vars */
+
   return (
     <Box>
       <Typography variant="subtitle1" sx={{ mb: 1 }}>
@@ -102,7 +125,6 @@ const FileUpload: React.FC<fileUploadProps> = ({ setFile }) => {
           </Link>
         </Typography>
       </Box>
-
       <Grid container spacing={2} sx={{ mt: 2 }}>
         {previewUrls.map((url, index) => (
           <Grid item xs={6} sm={3} key={index} sx={{ position: "relative", top: 0, right: 0 }}>
@@ -114,11 +136,7 @@ const FileUpload: React.FC<fileUploadProps> = ({ setFile }) => {
                 sx={{ height: 120, objectFit: "cover" }}
               />
               <Box sx={{ position: "absolute", top: 0, right: 0 }}>
-                <IconButton
-                  onClick={() => removeImage(index)}
-                  color="error"
-                  sx={{ backgroundColor: "white" }}
-                >
+                <IconButton onClick={() => removeImage(index)} color="error" sx={{ backgroundColor: "white" }}>
                   <Delete />
                 </IconButton>
               </Box>

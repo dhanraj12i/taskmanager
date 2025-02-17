@@ -40,7 +40,6 @@ const TaskItemModal: React.FC<TaskItemModalProps> = ({
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  // 🔹 Populate form fields when editing an existing task
   useEffect(() => {
     if (taskData) {
       setTask(taskData);
@@ -157,7 +156,7 @@ const TaskItemModal: React.FC<TaskItemModalProps> = ({
           </TextField>
         </Box>
       </Box>
-      <FileUpload setFile={handleChange} />
+      <FileUpload setFile={handleChange} task={task} />
     </CustomModal>
   );
 };

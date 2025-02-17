@@ -14,6 +14,8 @@ import {
   Chip,
   Box,
   Stack,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -66,37 +68,30 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
     await deleteTasks([id]);
     dispatch(setRefetch(true))
   }
-
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("sm"));
   return (
     <Box ref={dragRef as unknown as React.Ref<unknown>}>
       <Card
         variant="outlined"
         sx={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: { xs: "column", sm: "row" },
           width: "100%",
-          alignItems: "center",
+          alignItems: { xs: 'flex-start', sm: "center" },
           background: "#F1F1F1",
           p: 1,
-          gap: "65px",
+          gap: { xs: 2, sm: "65px" },
           margin: "4px 0",
           border: isDragging ? "none" : "1px",
           flexWrap: "wrap",
         }}
       >
-        <Box
-          sx={{ display: "flex", alignItems: "center", flexShrink: 0, gap: 2 }}
-        >
-          <Stack
-            direction="row"
-            alignItems="center"
-            sx={{ flexGrow: 1, gap: 1 }}
-          >
+        <Box sx={{ display: "flex", alignItems: "center", flexShrink: 0, gap: 2 }}>
+          <Stack direction="row" alignItems="center" sx={{ flexGrow: 1, gap: 1 }}>
             <Checkbox
               sx={{
-                [`&.Mui-checked`]: {
-                  color: "#7B1984",
-                },
+                [`&.Mui-checked`]: { color: "#7B1984" },
                 fontSize: 15,
                 height: 15,
                 width: 15,
@@ -111,18 +106,13 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
                 display: { xs: "none", sm: "flex" },
               }}
             />
-            <CheckCircleRoundedIcon
-              sx={{
-                fontSize: 20,
-                color: "gray",
-              }}
-            />
+            <CheckCircleRoundedIcon sx={{ fontSize: 20, color: "gray" }} />
           </Stack>
 
           <Typography
             variant="subtitle1"
             sx={{
-              width: "350px",
+              width: { xs: "100%", sm: "350px" },
               overflow: "hidden",
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
@@ -132,7 +122,7 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
             {task.title}
           </Typography>
         </Box>
-        <Box
+        {isDesktop && (<Box
           sx={{
             flexGrow: 1,
             flexWrap: "wrap",
@@ -140,18 +130,18 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
             alignItems: "center",
             textAlign: "center",
             gap: 1,
-            paddingX: { xs: 1, sm: 2 },
-            display: { xs: "none", sm: "flex" },
+            px: { xs: 1, sm: 2 },
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
           }}
         >
           <Typography
             variant="body2"
             color="textSecondary"
-            sx={{ width: "150px" }}
+            sx={{ width: { xs: "100%", sm: "150px" } }}
           >
-            {`${formatDate(task.duedate as Date)}`}
+            {formatDate(task.duedate as Date)}
           </Typography>
-
           <Chip
             label={task.status.toLocaleUpperCase()}
             variant="filled"
@@ -162,31 +152,31 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
               borderRadius: "4px",
             }}
           />
-
           <Typography
             variant="body2"
             noWrap
             sx={{
-              width: "100px",
+              width: { xs: "100%", sm: "100px" },
               textAlign: "left",
               textTransform: "capitalize",
             }}
           >
             {task.category}
           </Typography>
-
           <IconButton size="small" onClick={handleClick}>
             <MoreHorizIcon />
           </IconButton>
-          {anchorEl && <TaskActionMenu
-            task={task}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            anchorEl={anchorEl}
-            open={open}
-            handleClose={handleClose}
-          />}
-        </Box>
+          {anchorEl && (
+            <TaskActionMenu
+              task={task}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              anchorEl={anchorEl}
+              open={open}
+              handleClose={handleClose}
+            />
+          )}
+        </Box>)}
       </Card>
     </Box>
   );
