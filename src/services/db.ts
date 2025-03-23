@@ -31,7 +31,7 @@ const editTask = async (
 ): Promise<void> => {
   try {
     const taskRef = doc(db, "tasks", taskId);
-    await updateDoc(taskRef, {
+    return await updateDoc(taskRef, {
       ...updatedData,
       updated: serverTimestamp(),
     });

@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
     return unsubscribe;
-  }, []);
+  }, [dispatch]);
 
   const value = useMemo(() => ({ user, setUser }), [user]);
 

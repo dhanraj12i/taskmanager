@@ -23,7 +23,7 @@ const RoundedTextField = styled(TextField)(() => ({
 
 const FilterOnLabel: React.FC = React.memo(() => {
   const dispatch = useDispatch();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const [localFilters, setLocalFilters] = useState({
     category: '',
