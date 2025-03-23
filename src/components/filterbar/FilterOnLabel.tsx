@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useState } from "react";
 import CustomSelect from "../shared/CustomSelect";
 import {
   Box,
@@ -8,9 +8,9 @@ import {
   InputAdornment,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setFilters, setSearchText } from "../../states/store/slice";
-import { getFilters } from "../../states/store/selectors";
+import { useQueryClient } from "@tanstack/react-query";
 
 const RoundedTextField = styled(TextField)(() => ({
   "& .MuiOutlinedInput-root": {
@@ -23,36 +23,39 @@ const RoundedTextField = styled(TextField)(() => ({
 
 const FilterOnLabel: React.FC = React.memo(() => {
   const dispatch = useDispatch();
-  const filters = useSelector(getFilters);
+  const queryClient = useQueryClient()
 
-  // Local state to manage UI before dispatching to Redux
   const [localFilters, setLocalFilters] = useState({
-    category: filters.category,
-    dueDate: filters.dueDate,
+    category: '',
+    dueDate: '',
     searchText: "",
   });
 
-  const categoryOptions = useMemo(() => [
+  const categoryOptions = [
+    { value: "All", label: "All" },
     { value: "Work", label: "Work" },
     { value: "Personal", label: "Personal" },
-  ], []);
+  ]
 
-  const dueDateOptions = useMemo(() => [
+  const dueDateOptions = [
+    { value: "All", label: "All" },
     { value: "today", label: "Today" },
     { value: "this-week", label: "This Week" },
     { value: "this-month", label: "This Month" },
-  ], []);
+  ]
 
-  const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setLocalFilters((prev) => ({ ...prev, searchText: value }));
     dispatch(setSearchText(value));
-  }, [dispatch]);
+    queryClient.invalidateQueries({ queryKey: ["tasks"] });
+  }
 
-  const handleFilterChange = useCallback((key: "category" | "dueDate", value: string) => {
+  const handleFilterChange = (key: "category" | "dueDate", value: string) => {
     setLocalFilters((prev) => ({ ...prev, [key]: value }));
     dispatch(setFilters({ [key]: value }));
-  }, [dispatch]);
+    queryClient.invalidateQueries({ queryKey: ["tasks"] });
+  }
 
   return (
     <Box

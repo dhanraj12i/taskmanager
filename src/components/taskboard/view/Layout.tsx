@@ -1,108 +1,113 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { RowItem, TaskBoardData, TaskItems } from "../../../types/types";
+import { useEffect, useCallback, useMemo } from "react";
 import { fetchTasks } from "../../../services/db";
 import { Timestamp } from "firebase/firestore";
 import ListView from "./list/ListView";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  getRefetchState,
-  getSearchText,
-  getViewType,
-  getFilters,
-  getIsLoading
-} from "../../../states/store/selectors";
+import { getSearchText, getViewType, getFilters, getUUID } from "../../../states/store/selectors";
+import { useQuery } from "@tanstack/react-query";
 import BoardView from "./board/BoardView";
 import { setIsLoading } from "../../../states/store/slice";
 import { Box, CircularProgress } from "@mui/material";
+import { TaskItems, TaskBoardData, FiltersType, RowItem } from "../../../types/types";
+import { Dispatch } from "@reduxjs/toolkit";
 
 const Layout = () => {
-  const [tableData, setTableData] = useState<TaskBoardData>([]);
-  const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);
+  console.log("🔄 Layout component rendering...");
 
-  const isListViewActive = useSelector(getViewType);
-  const isLoading = useSelector(getIsLoading);
-  const searchText = useSelector(getSearchText);
-  const isRefetch = useSelector(getRefetchState);
-  const filters = useSelector(getFilters);
   const dispatch = useDispatch();
+  const userID = useSelector(getUUID);
+  const filters = useSelector(getFilters);
+  const searchText = useSelector(getSearchText);
+  const isListViewActive = useSelector(getViewType);
 
-  const initialData: RowItem[] = useMemo(() => [
+  const initialData: TaskBoardData = useMemo(() => [
     { id: "todo", title: "ToDo", tasks: [], bgColor: "#FAC3FF" },
     { id: "inprogress", title: "In-Progress", tasks: [], bgColor: "#85D9F1" },
     { id: "completed", title: "Completed", tasks: [], bgColor: "#CEFFCC" },
   ], []);
 
-  const convertFirebaseTimestamp = useCallback((timestamp: Timestamp | Date): Date => {
+  const convertFirebaseTimestamp = useCallback((timestamp: Timestamp | Date | null): Date => {
+    if (!timestamp) return new Date();
     return timestamp instanceof Timestamp ? timestamp.toDate() : timestamp;
   }, []);
 
-  const transformData = useCallback((data: TaskItems[]) => {
-    setTableData(
-      initialData.map((boardItem) => ({
-        ...boardItem,
-        tasks: data
-          .filter((task) => task.status === boardItem.id)
-          .map((task) => ({
-            ...task,
-            createdAt: convertFirebaseTimestamp(task.createdAt),
-            updatedAt: convertFirebaseTimestamp(task.updated),
-            duedate: convertFirebaseTimestamp(task.duedate),
-          })),
-      }))
-    );
-  }, [initialData, convertFirebaseTimestamp]);
-
-  const loadData = useCallback(async () => {
-    dispatch(setIsLoading(true))
+  const fetchAndTransformTasks = async (
+    filters: FiltersType,
+    searchText: string,
+    transformData: (data: TaskItems[]) => TaskBoardData,
+    initialData: TaskBoardData,
+    dispatch: Dispatch,
+  ) => {
+    console.log("📡 Fetching tasks...");
+    dispatch(setIsLoading(true));
     try {
-      const res = await fetchTasks({ category: filters.category, dueDateFilter: filters.dueDate });
-      if (res.length > 0) {
-        transformData(res);
-      }
-    } catch (error) {
-      console.error("Failed to load tasks:", error);
-    } finally {
-      dispatch(setIsLoading(false))
-    }
-  }, [filters, transformData, dispatch]);
+      console.log("📡 Fetching tasks... filter", { category: filters.category, dueDateFilter: filters.dueDate, uID: userID });
+      const res = await fetchTasks({ category: filters.category, dueDateFilter: filters.dueDate, uID: userID });
+      console.log("✅ Fetched tasks:", res);
 
-  useEffect(() => {
-    loadData();
-  }, [filters, isRefetch, filters]);
-
-  useEffect(() => {
-    if (!searchText) return;
-    if (debounceTimeout) clearTimeout(debounceTimeout);
-
-    const newTimeout = setTimeout(() => {
-      dispatch(setIsLoading(true))
-      setTableData((prevData) =>
-        prevData.map((boardItem) => ({
+      const transformed: TaskBoardData = res.length > 0 ? transformData(res) : initialData;
+      console.log('transformed', transformed)
+      if (searchText) {
+        console.log("🔄 Filters/Search changed, refetching data...");
+        console.log("🔎 Filtering tasks with search text:", searchText);
+        return transformed.map((boardItem: RowItem) => ({
           ...boardItem,
-          tasks: boardItem.tasks.filter((task) =>
+          tasks: boardItem.tasks?.filter((task: TaskItems) =>
             task.title.toLowerCase().includes(searchText.toLowerCase())
           ),
-        }))
-      );
-      dispatch(setIsLoading(false))
-    }, 300);
+        }));
+      }
+      return transformed;
+    } catch (error) {
+      console.error("❌ Failed to load tasks:", error);
+      return initialData;
+    } finally {
+      dispatch(setIsLoading(false));
+    }
+  };
 
-    setDebounceTimeout(newTimeout);
-  }, [searchText]);
+  const transformData = useCallback((data: TaskItems[]): TaskBoardData => {
+    console.log("⚙️ Transforming data...");
+    return initialData.map((boardItem: RowItem) => ({
+      ...boardItem,
+      tasks: data
+        .filter((task: TaskItems) => task.status === boardItem.id)
+        .map((task: TaskItems) => ({
+          ...task,
+          createdAt: convertFirebaseTimestamp(task.createdAt),
+          updated: convertFirebaseTimestamp(task.updated),
+          duedate: convertFirebaseTimestamp(task.duedate),
+        })),
+    }));
+  }, [initialData, convertFirebaseTimestamp]);
 
-  if (isLoading) {
+  const { data: tableData, isFetching, refetch } = useQuery({
+    queryKey: ["tasks", filters, searchText],
+    queryFn: () => fetchAndTransformTasks(filters, searchText, transformData, initialData, dispatch),
+    enabled: !!userID,
+    staleTime: 300000,
+    refetchOnWindowFocus: false,
+  });
+
+  useEffect(() => {
+    if (userID)
+      refetch();
+  }, [filters, searchText, refetch, userID]);
+
+  if (isFetching) {
+    console.log("⏳ Loading tasks...", isFetching);
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
         <CircularProgress />
       </Box>
-    )
-  } else {
-    return tableData.length > 0 && (
-      isListViewActive
-        ? <ListView listData={tableData} />
-        : <BoardView tableData={tableData} />
     );
   }
+
+  return tableData && tableData.length > 0 && (
+    isListViewActive
+      ? <ListView listData={tableData} />
+      : <BoardView tableData={tableData} />
+  );
 };
 
 export default Layout;

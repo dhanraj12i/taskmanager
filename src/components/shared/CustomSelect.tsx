@@ -33,9 +33,6 @@ const CustomSelect: React.FC<CustomSelectProps> = React.memo(
           label={label}
           sx={{ borderRadius: "25px" }}
         >
-          <MenuItem value="">
-            <em>All</em>
-          </MenuItem>
           {options?.map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}

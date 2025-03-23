@@ -5,20 +5,27 @@ import { TaskItems } from "../../types/types";
 import { useDispatch } from "react-redux";
 import { setRefetch } from "../../states/store/slice";
 import TaskItemModal from "../modal-view/CreateTaskItem";
+import { snackbarMessages } from "../../utils/notification";
+import { showSnackbar } from "../../states/notification/NotificationProvider";
+import { useQueryClient } from "@tanstack/react-query";
 
 const FilterSearch = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+  const queryClient = useQueryClient()
+
+  const { variant, msg } = snackbarMessages.success.add;
 
   const handleClose = () => {
     setOpen(!open);
   };
 
   const onCreated = (payload: TaskItems) => {
-    createTask(payload).then((res) => {
-      dispatch(setRefetch(true))
+    createTask(payload).then(() => {
+      dispatch(setRefetch(true));
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
       handleClose();
-      console.log(res);
+      showSnackbar(msg("Task", { detail: "Please Update Progress Accordingly" }), variant);
     })
   }
 

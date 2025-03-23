@@ -6,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { TaskItems } from '../../../../types/types';
 import ConfirmDeleteModal from '../../actions/ConfirmDeleteTask';
 import TaskItemModal from '../../../modal-view/CreateTaskItem';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface TaskActionMenuProps {
     task: TaskItems;
@@ -25,20 +26,25 @@ const TaskActionMenu: React.FC<TaskActionMenuProps> = ({
     handleClose
 }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [isEditOpen, setEditIsOpen] = useState(false);
-
-
+    const [EditOpen, setEditOpen] = useState(false);
+    const queryClient = useQueryClient();
 
     const toggleModal = () => {
         setIsOpen(!isOpen)
     }
 
     const toggleEditModal = () => {
-        setEditIsOpen(!isEditOpen)
+        setEditOpen(!EditOpen)
     }
 
     const confirmDelete = () => {
-        onDelete(task.id!);
+        console.log(task.id, 'task.id')
+        alert('delete called')
+
+        if (task.id) {
+            onDelete(task.id)
+            queryClient.invalidateQueries({ queryKey: ["tasks"] });
+        };
         setIsOpen(false);
     };
 
@@ -59,7 +65,7 @@ const TaskActionMenu: React.FC<TaskActionMenuProps> = ({
                     <DeleteIcon fontSize="small" sx={{ mr: 1 }} /> Delete
                 </MenuItem>
             </Menu>
-            {isEditOpen && <TaskItemModal open={isEditOpen} onClose={toggleEditModal} onSave={onEdit} taskData={{ ...task }} />}
+            {EditOpen && <TaskItemModal open={EditOpen} onClose={toggleEditModal} onSave={onEdit} taskData={{ ...task }} />}
             {isOpen && <ConfirmDeleteModal
                 open={isOpen}
                 onClose={closeDeleteModal}

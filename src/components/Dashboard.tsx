@@ -2,8 +2,10 @@ import { Box } from "@mui/material";
 import Header from "./Header";
 import FilterBar from "./filterbar/FilterBar";
 import Layout from "./taskboard/view/Layout";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const Dashboard = () => {
+  const queryClient = new QueryClient();
   return (
     <Box sx={{ padding: "0" }}>
       <Box
@@ -15,16 +17,18 @@ const Dashboard = () => {
       >
         <Header />
       </Box>
-      <Box
-        sx={{
-          padding: { xs: "18px 14px", sm: "36px 32px" },
-        }}
-        display={"flex"}
-        flexDirection={"column"}
-      >
-        <FilterBar />
-        <Layout />
-      </Box>
+      <QueryClientProvider client={queryClient}>
+        <Box
+          sx={{
+            padding: { xs: "18px 14px", sm: "36px 32px" },
+          }}
+          display={"flex"}
+          flexDirection={"column"}
+        >
+          <FilterBar />
+          <Layout />
+        </Box>
+      </QueryClientProvider>
     </Box>
   );
 };
