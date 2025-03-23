@@ -25,3 +25,13 @@ export type RowItem = {
 };
 
 export type TaskBoardData = RowItem[];
+export interface FiltersType {
+  category?: string;
+  dueDate?: string;
+}
+
+export type FetchTasksParams = {
+  category?: string;
+  dueDateFilter?: string;
+  uID: string;
+};

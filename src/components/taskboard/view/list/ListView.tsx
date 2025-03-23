@@ -7,10 +7,10 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import { RowItem, TaskBoardData, TaskItems } from "../../../../types/types";
 import ListPanalWrapper from "./ListPanalWrapper";
-// import { Timestamp } from "firebase/firestore";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ListItem from "./ListItem";
 import ActionOnSelect from '../../actions/ActionOnSelect';
+import { editTask } from "../../../../services/db";
 
 type ListViewProps = {
   listData: TaskBoardData;
@@ -18,15 +18,16 @@ type ListViewProps = {
 };
 
 const ListView: React.FC<ListViewProps> = ({ listData, isBoardView = false }) => {
-  const [panalItems, setPanalItems] = useState<TaskBoardData>(listData);
   const [selectedTasks, setSelectedTasks] = useState<TaskItems[]>([]);
-  const [expandedSections, setExpandedSections] = useState<
-    Record<string, boolean>
-  >(panalItems.reduce((acc, row) => ({ ...acc, [row.title]: true }), {}));
+  const [panalItems, setPanalItems] = useState<TaskBoardData>(listData);
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>(
+    panalItems?.reduce((acc, row) => ({ ...acc, [row.title]: true }), {})
+  );
 
   useEffect(() => {
     if (listData.length > 0) {
-      setPanalItems(listData)
+      setPanalItems(listData);
+      console.log("[ListView] Updated panel items from listData:", listData);
     }
   }, [listData]);
 
@@ -35,50 +36,75 @@ const ListView: React.FC<ListViewProps> = ({ listData, isBoardView = false }) =>
       ...prev,
       [section]: !prev[section],
     }));
+    console.log(`[ListView] Toggled section: ${section}`, expandedSections);
   };
 
-  const moveTask = (fromPath: string, toRowId: string) => {
-    const [fromRowIndex, fromTaskIndex] = fromPath
-      .split("-")
-      .map((value) => parseInt(value));
+  const moveTask = async (fromPath: string, toRowId: string) => {
+    console.log(`[ListView - DragDrop] Moving task from ${fromPath} to row ${toRowId}`);
 
+    const [fromRowIndex, fromTaskIndex] = fromPath.split("-").map((value) => parseInt(value));
     const fromRow = panalItems[fromRowIndex];
     const toRow = panalItems.find((row) => row.id === toRowId);
 
-    if (!fromRow || !toRow) return;
+    console.log("[ListView - DragDrop] task while toRow:", toRow);
+    console.log("[ListView - DragDrop] fromRowIndex fromTaskIndex", { fromRowIndex, fromTaskIndex });
+
+    if (!fromRow || !toRow) {
+      console.warn(`[ListView - DragDrop] Invalid move operation: fromRow or toRow not found`);
+      return;
+    }
 
     const task = fromRow.tasks[fromTaskIndex];
 
-    const updatedFromRow: RowItem = {
-      ...fromRow,
-      tasks: fromRow.tasks.filter((_, idx) => idx !== fromTaskIndex),
-    };
+    if (task?.id) {
+      console.log("[ListView - DragDrop] task while move:", task);
 
-    const updatedToRow: RowItem = {
-      ...toRow,
-      tasks: [...toRow.tasks, task],
-    };
+      const prevData = [...panalItems];
 
-    const updatedData = panalItems.map((row) => {
-      if (row.id === fromRow.id) return updatedFromRow;
-      if (row.id === toRow.id) return updatedToRow;
-      return row;
-    });
+      const updatedFromRow: RowItem = {
+        ...fromRow,
+        tasks: fromRow.tasks.filter((_, idx) => idx !== fromTaskIndex),
+      };
 
-    setPanalItems(updatedData);
+      const updatedToRow: RowItem = {
+        ...toRow,
+        tasks: [...toRow.tasks, { ...task, status: toRow.id }],
+      };
+
+      const updatedData = panalItems.map((row) => {
+        if (row.id === fromRow.id) return updatedFromRow;
+        if (row.id === toRow.id) return updatedToRow;
+        return row;
+      });
+
+      console.log("[ListView - DragDrop] Updated panel items after move:", updatedData);
+      setPanalItems(updatedData);
+
+      try {
+        await editTask(task.id, { ...task, status: toRow.id });
+      } catch (error) {
+        console.error("[ListView - DragDrop] API call failed, reverting dragged Item position:", error);
+        setPanalItems(prevData);
+      }
+    }
   };
 
 
   useEffect(() => {
-  }
-    , [isBoardView, selectedTasks])
+    console.log("[ListView] BoardView mode:", isBoardView);
+    console.log("[ListView] Selected tasks updated:", selectedTasks);
+  }, [isBoardView, selectedTasks]);
 
   const handleCheckBox = (task: TaskItems) => {
     setSelectedTasks((prevSelected) => {
       const isSelected = prevSelected.some((t) => t.id === task.id);
-      return isSelected
+      const updatedSelection = isSelected
         ? prevSelected.filter((t) => t.id !== task.id)
         : [...prevSelected, task];
+
+      console.log(`[ListView - Checkbox] ${isSelected ? "Deselected" : "Selected"} task:`, task);
+      console.log("[ListView - Checkbox] Updated selected tasks:", updatedSelection);
+      return updatedSelection;
     });
   };
 

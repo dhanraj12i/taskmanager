@@ -24,8 +24,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { formatDate } from "../../../../utils/utils";
 import TaskActionMenu from "./RowAction";
 import { deleteTasks, editTask } from "../../../../services/db";
-import { useDispatch } from "react-redux";
-import { setRefetch } from "../../../../states/store/slice";
+import { useQueryClient } from "@tanstack/react-query";
 
 type ListItemProps = {
   task: TaskItems;
@@ -39,13 +38,16 @@ type ListItemProps = {
 const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, selectedTasks, isBoardView }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const dispatch = useDispatch()
+  const queryClient = useQueryClient()
+
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const [{ isDragging }, dragRef] = useDrag({
     type: ItemTypes.TASK,
     item: { task, index, path },
@@ -58,7 +60,6 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
     if (payload.id) {
       const { id, ...updatedData } = payload;
       await editTask(id, updatedData);
-      dispatch(setRefetch(true));
     } else {
       console.warn('Task ID is missing, cannot edit task.');
     }
@@ -66,8 +67,9 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
   };
 
   const onDelete = async (id: string) => {
+    alert(`${[id]}`)
     await deleteTasks([id]);
-    dispatch(setRefetch(true))
+    queryClient.invalidateQueries({ queryKey: ["tasks"] });
   }
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("sm"));
@@ -107,7 +109,9 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
                 display: { xs: "none", sm: "flex" },
               }}
             />
-            <CheckCircleRoundedIcon sx={{ fontSize: 20, color: "gray" }} />
+            <CheckCircleRoundedIcon
+              sx={{ fontSize: 20, color: task.status === 'completed' ? 'green' : 'gray' }}
+            />
           </Stack>}
 
           <Typography
@@ -157,7 +161,6 @@ const ListItem: React.FC<ListItemProps> = ({ task, index, path, handleCheckBox, 
               }}
             />
           }
-
           <Typography
             variant="body2"
             noWrap

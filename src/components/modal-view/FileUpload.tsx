@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { DropEvent, FileRejection, useDropzone } from "react-dropzone";
+import { useDropzone } from "react-dropzone";
 import { Box, Typography, Link, Grid, Card, CardMedia, IconButton } from "@mui/material";
 import { TaskItems } from "../../types/types";
 import { Delete } from "@mui/icons-material";
@@ -26,7 +26,8 @@ const FileUpload: React.FC<FileUploadProps> = ({ setFile, task }) => {
 
   const base64ToBlob = (base64Data: string): Blob => {
     const parts = base64Data.split(",");
-    const mimeMatch = parts[0].match(/:(.*?);/);
+    const regex = /:(.*?);/;
+    const mimeMatch = regex.exec(parts[0]);
     const mime = mimeMatch ? mimeMatch[1] : "";
     const binary = atob(parts[1]);
     const length = binary.length;
@@ -44,12 +45,10 @@ const FileUpload: React.FC<FileUploadProps> = ({ setFile, task }) => {
       setPreviewUrls(urls);
       setFileBlobs([...task.files]);
     }
-  }, []); // Run only on mount
+  }, [task]); // Run only on mount
 
   const onDrop = async (
     acceptedFiles: File[],
-    _fileRejections: FileRejection[],
-    _event: DropEvent
   ) => {
     const base64Files: string[] = [];
     const imagePreviews: string[] = [];
@@ -79,8 +78,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ setFile, task }) => {
     if (fileBlobs.length > 0) {
       setFile("files", [...fileBlobs]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fileBlobs]);
+  }, [fileBlobs, setFile]);
 
   const removeImage = (index: number) => {
     const newPreviewUrls = [...previewUrls];

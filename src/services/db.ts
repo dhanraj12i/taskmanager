@@ -9,7 +9,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { collection, getDocs, db } from "../config/firebase/firebase-Config";
-import { TaskItems } from "../types/types";
+import { FetchTasksParams, TaskItems } from "../types/types";
 
 const createTask = async (task: TaskItems) => {
   try {
@@ -31,7 +31,7 @@ const editTask = async (
 ): Promise<void> => {
   try {
     const taskRef = doc(db, "tasks", taskId);
-    await updateDoc(taskRef, {
+    return await updateDoc(taskRef, {
       ...updatedData,
       updated: serverTimestamp(),
     });
@@ -44,8 +44,13 @@ const editTask = async (
 const fetchTasks = async ({
   category = "All",
   dueDateFilter = "All",
-} = {}): Promise<TaskItems[]> => {
+  uID,
+}: FetchTasksParams): Promise<TaskItems[]> => {
   try {
+    console.log(';user ID fetchTasks', uID)
+    console.log('filter ID dueDateFilter', dueDateFilter)
+    console.log('filter ID category', category)
+
     const tasksCollection = collection(db, "tasks");
     const conditions = [];
 
@@ -102,15 +107,21 @@ const fetchTasks = async ({
         );
       }
     }
-    const tasksQuery = conditions.length
+    const tasksQuery = conditions?.length
       ? query(tasksCollection, ...conditions)
       : tasksCollection;
 
     const snapshot = await getDocs(tasksQuery);
-    return snapshot.docs.map((doc) => ({
+    // return snapshot.docs.map((doc) => ({
+    const test = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...(doc.data() as TaskItems),
     }));
+    console.log("test fetch data ", test);
+    return test.filter((doc) => {
+      console.log('fiulter test fetch', doc.UUID , doc.UUID === uID ? '==' :'!=', uID)
+      return doc.UUID === uID;
+    });
   } catch (error) {
     console.error("Error fetching tasks:", error);
     return [];

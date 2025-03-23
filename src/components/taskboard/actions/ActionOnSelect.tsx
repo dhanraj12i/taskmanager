@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { deleteTasks, updateTaskStatus } from '../../../services/db';
 import { setRefetch } from '../../../states/store/slice';
 import { TaskItems } from '../../../types/types';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface ActionOnSelectProps {
     selectedTasks: TaskItems[];
@@ -13,7 +14,7 @@ interface ActionOnSelectProps {
 const ActionOnSelect: React.FC<ActionOnSelectProps> = ({ selectedTasks, setSelectedTasks }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const dispatch = useDispatch();
-
+    const queryClient = useQueryClient()
     const handleOpenMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -31,11 +32,17 @@ const ActionOnSelect: React.FC<ActionOnSelectProps> = ({ selectedTasks, setSelec
 
     const handleDelete = async () => {
         const ids = selectedTasks.map((task: TaskItems) => task.id);
+
         if (ids.length > 0) {
-            await deleteTasks(ids as string[]);
-            setSelectedTasks([])
-            dispatch(setRefetch(true));
-        };
+            try {
+                await deleteTasks(ids as string[]);
+                setSelectedTasks([]);
+                dispatch(setRefetch(true));
+                queryClient.invalidateQueries({ queryKey: ["tasks"] });
+            } catch (error) {
+                console.error("❌ Error deleting tasks:", error);
+            }
+        }
     };
 
     return (

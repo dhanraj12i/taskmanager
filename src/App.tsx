@@ -1,12 +1,12 @@
 import "./App.css";
-import { SnackbarProvider } from "notistack";
 import Pages from "./components/Pages";
+import { NotificationProvider } from "./states/notification/NotificationProvider";
 
 function App() {
   return (
-    <SnackbarProvider maxSnack={3}>
+    <NotificationProvider>
       <Pages />
-    </SnackbarProvider>
+    </NotificationProvider>
   );
 }
 
